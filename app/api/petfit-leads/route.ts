@@ -10,6 +10,7 @@ export async function POST(request: Request) {
     console.log(`- 보호자 성함: ${data.applicantName}`);
     console.log(`- 연락처: ${data.applicantPhone}`);
     console.log(`- 반려동물: ${data.petName} (${data.breed}, ${data.petType})`);
+    console.log(`- 성별: ${data.gender || '미입력'}`); // 🌟 콘솔에 성별 출력 추가
     console.log(`- 선택 보험사: ${data.selectedInsurance || '미선택'}`);
     console.log(`- 체중 / 중성화: ${data.weight}kg / ${data.isNeutered === 'yes' ? 'O' : 'X'}`);
     console.log(`- 상담 방식: ${data.consultType}`);
@@ -35,11 +36,12 @@ export async function POST(request: Request) {
           <p>새로운 고객이 맞춤 펫보험 견적 및 상담을 신청했습니다.</p>
           <hr style="border: 0; border-top: 1px solid #fecdd3; margin: 15px 0;" />
           <ul style="list-style: none; padding: 0; line-height: 1.8; color: #334155;">
-            <li><b>📌 신청 보험사:</b> <span style="color: #f43f5e; font-weight: bold;">${data.selectedInsurance || '미선택'}</span></li>
+            <li><b>📌 신청 플랜:</b> <span style="color: #f43f5e; font-weight: bold;">${data.selectedInsurance || '미선택'}</span></li>
             <li><b>👤 보호자 성함:</b> ${data.applicantName}</li>
             <li><b>📞 연락처:</b> ${data.applicantPhone}</li>
             <li><b>🐶 반려동물 이름:</b> ${data.petName}</li>
             <li><b>🏷️ 품종 / 분류:</b> ${data.breed} (${data.petType === 'dog' ? '강아지' : '고양이'})</li>
+            <li><b>🐾 성별:</b> <span style="color: #f43f5e; font-weight: bold;">${data.gender || '미입력'}</span></li> <!-- 🌟 이메일 본문에 성별 항목 추가 -->
             <li><b>📅 태어난 해:</b> ${data.birthYear}년</li>
             <li><b>⚖️ 체중:</b> ${data.weight || '미입력'} kg</li>
             <li><b>✂️ 중성화 여부:</b> ${data.isNeutered === 'yes' ? 'O (예)' : 'X (아니오)'}</li>
