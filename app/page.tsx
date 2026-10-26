@@ -11,25 +11,27 @@ export default function Home() {
     breed: '',
     weight: '',
     isNeutered: 'yes',
+    gender: '남아 (♂)',
     ownerPhone: '',
   });
 
-  // [전체 보험사 한번에 비교] 모달 및 단계별 상태 관리 (STEP 4)
+  // [플랜 비교] 모달 및 단계별 상태 관리 (STEP 4)
   const [isCompareModalOpen, setIsCompareModalOpen] = useState(false);
   const [compareStep, setCompareStep] = useState<1 | 2 | 3 | 4>(1); 
   const [selectedCategory, setSelectedCategory] = useState<'dog' | 'cat'>('dog');
   const [selectedBreed, setSelectedBreed] = useState('토이푸들 / 말티즈');
   
-  // 사용자가 선택한 보험사 상태
-  const [selectedInsurance, setSelectedInsurance] = useState('메리츠 펫퍼민트');
+  // 사용자가 선택한 플랜 상태 (프리미엄 / 스탠다드 / 실속가득)
+  const [selectedPlan, setSelectedPlan] = useState('스탠다드 플랜 (보상비율 70%)');
   
-  // 최종 DB 저장용 신청자 정보 상태 (아이 이름 추가)
+  // 최종 DB 저장용 신청자 정보 상태
   const [applicantInfo, setApplicantInfo] = useState({
     petName: '',
     name: '',
     phone: '',
     weight: '',
     isNeutered: 'yes',
+    gender: '남아 (♂)',
     consultType: 'online', 
     memo: '',
   });
@@ -64,12 +66,12 @@ export default function Home() {
     setSelectedCategory(petType);
     setSelectedBreed(formData.breed);
     
-    // 🌟 메인 폼에서 입력한 아이 이름, 체중, 중성화, 연락처를 모달 신청 폼에 자동 연동
     setApplicantInfo({
       ...applicantInfo,
       petName: formData.petName,
       weight: formData.weight,
       isNeutered: formData.isNeutered,
+      gender: formData.gender,
       phone: formData.ownerPhone,
     });
 
@@ -92,10 +94,11 @@ export default function Home() {
       birthYear: formData.birthYear,
       weight: applicantInfo.weight,
       isNeutered: applicantInfo.isNeutered,
+      gender: applicantInfo.gender,
       applicantName: applicantInfo.name,
       applicantPhone: applicantInfo.phone,
       consultType: applicantInfo.consultType === 'online' ? '온라인 (화상)' : '대면 (직접)',
-      selectedInsurance: selectedInsurance,
+      selectedInsurance: selectedPlan,
       memo: applicantInfo.memo,
       createdAt: new Date().toISOString(),
     };
@@ -113,7 +116,7 @@ export default function Home() {
         throw new Error(result.message || '서버 전송 실패');
       }
 
-      alert(`🎉 [접수 완료] ${applicantInfo.name}님, [${selectedInsurance}] 맞춤 견적 신청이 완료되었습니다! 담당 전문가가 연락드리겠습니다 🐾`);
+      alert(`🎉 [접수 완료] ${applicantInfo.name}님, [${selectedPlan}] 맞춤 견적 신청이 완료되었습니다! 담당 전문가가 연락드리겠습니다 🐾`);
       setIsCompareModalOpen(false);
       setCompareStep(1);
     } catch (error) {
@@ -124,7 +127,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-rose-50/40 text-slate-800 font-sans">
-      {/* 1. PetFit 상단 네비게이션 */}
+      {/* 1. 상단 네비게이션 */}
       <header className="bg-white/90 backdrop-blur-md border-b border-rose-100 sticky top-0 z-40 shadow-sm">
         <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
           <div 
@@ -146,7 +149,7 @@ export default function Home() {
             }}
             className="bg-rose-500 hover:bg-rose-600 text-white font-bold text-xs sm:text-sm px-4 py-2 rounded-full transition shadow-md shadow-rose-500/20"
           >
-            전체 보험사 한번에 비교
+            플랜별 맞춤 비교견적
           </button>
         </div>
       </header>
@@ -160,30 +163,22 @@ export default function Home() {
               ✨ 내 아이 맞춤 펫보험 비교 플랫폼 PetFit
             </div>
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight tracking-tight">
-              모든 보험사의 펫보험 상품을 전부 비교하여,<br />
+              우리 아이에게 딱 맞는 플랜으로,<br />
               <span className="text-rose-500 underline decoration-rose-200 decoration-wavy decoration-2">
-                최적의 혜택과 가격
-              </span>에 맞춰드립니다!
+                합리적인 펫보험
+              </span>을 설계해 드립니다!
             </h1>
             <p className="text-slate-700 text-sm sm:text-base leading-relaxed max-w-md bg-white/40 md:bg-transparent p-2 rounded-lg">
-              어디가 제일 저렴할까 일일이 비교하지 마세요.<br />
-              <strong>PetFit</strong>이 보장 한도, 자기부담금, 슬개골·피부·치과 특약까지 딱 맞는 조건으로 분석해 드립니다.
+              복잡한 비교는 그만.<br />
+              <strong>PetFit</strong>이 프리미엄, 스탠다드, 실속가득 플랜별로 최적의 보장 비율을 찾아드립니다.
             </p>
-            
-            <div className="pt-2 flex flex-wrap justify-center md:justify-start gap-2 text-xs font-bold text-slate-600">
-              <span className="bg-white/90 px-3 py-1.5 rounded-lg border border-slate-200 shadow-sm">메리츠 펫퍼민트</span>
-              <span className="bg-white/90 px-3 py-1.5 rounded-lg border border-slate-200 shadow-sm">DB 프로미</span>
-              <span className="bg-white/90 px-3 py-1.5 rounded-lg border border-slate-200 shadow-sm">현대해상</span>
-              <span className="bg-white/90 px-3 py-1.5 rounded-lg border border-slate-200 shadow-sm">KB 금쪽같은</span>
-              <span className="bg-white/90 px-3 py-1.5 rounded-lg border border-slate-200 shadow-sm">삼성화재</span>
-            </div>
           </div>
 
           <div className="md:col-span-6 bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-rose-100/80">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h2 className="text-xl font-bold text-slate-900">우리 아이를 위한 최적의 설계 </h2>
-                <p className="text-xs text-slate-400 mt-0.5">우리 아이 정보를 입력하고 최적의 견적을 확인하세요.</p>
+                <h2 className="text-xl font-bold text-slate-900">우리 아이를 위한 최적의 설계</h2>
+                <p className="text-xs text-slate-400 mt-0.5">우리 아이 정보를 입력하고 맞춤 플랜을 확인하세요.</p>
               </div>
               <span className="text-3xl">📊</span>
             </div>
@@ -254,6 +249,34 @@ export default function Home() {
               </div>
 
               <div>
+                <label className="block text-xs font-bold text-slate-600 mb-1">반려동물 성별</label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setFormData({ ...formData, gender: '남아 (♂)' })}
+                    className={`py-3 rounded-xl font-bold text-xs transition ${
+                      formData.gender === '남아 (♂)'
+                        ? 'bg-rose-500 text-white shadow-sm'
+                        : 'bg-slate-50 text-slate-500 border border-slate-200 hover:bg-slate-100'
+                    }`}
+                  >
+                    남아 ♂
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFormData({ ...formData, gender: '여아 (♀)' })}
+                    className={`py-3 rounded-xl font-bold text-xs transition ${
+                      formData.gender === '여아 (♀)'
+                        ? 'bg-rose-500 text-white shadow-sm'
+                        : 'bg-slate-50 text-slate-500 border border-slate-200 hover:bg-slate-100'
+                    }`}
+                  >
+                    여아 ♀
+                  </button>
+                </div>
+              </div>
+
+              <div>
                 <label className="block text-xs font-bold text-slate-600 mb-1">품종</label>
                 <input
                   type="text"
@@ -264,7 +287,6 @@ export default function Home() {
                   onChange={handleChange}
                   className="w-full px-3.5 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-400 text-sm"
                 />
-                
                 <div className="mt-2 flex flex-wrap gap-1.5">
                   {petType === 'dog' ? (
                     <>
@@ -273,15 +295,12 @@ export default function Home() {
                       <button type="button" onClick={() => handleChipClick('비숑')} className="text-xs bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold px-2.5 py-1 rounded-full border border-rose-100 transition">비숑</button>
                       <button type="button" onClick={() => handleChipClick('말티푸')} className="text-xs bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold px-2.5 py-1 rounded-full border border-rose-100 transition">말티푸</button>
                       <button type="button" onClick={() => handleChipClick('말티즈 (몰티즈)')} className="text-xs bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold px-2.5 py-1 rounded-full border border-rose-100 transition">말티즈 (몰티즈)</button>
-                      <button type="button" onClick={() => handleChipClick('기타/믹스견')} className="text-xs bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold px-2.5 py-1 rounded-full border border-slate-200 transition">기타/믹스견</button>
                     </>
                   ) : (
                     <>
                       <button type="button" onClick={() => handleChipClick('코리안숏헤어')} className="text-xs bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold px-2.5 py-1 rounded-full border border-rose-100 transition">코리안숏헤어</button>
                       <button type="button" onClick={() => handleChipClick('페르시안')} className="text-xs bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold px-2.5 py-1 rounded-full border border-rose-100 transition">페르시안</button>
                       <button type="button" onClick={() => handleChipClick('렉돌')} className="text-xs bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold px-2.5 py-1 rounded-full border border-rose-100 transition">렉돌</button>
-                      <button type="button" onClick={() => handleChipClick('러시안블루')} className="text-xs bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold px-2.5 py-1 rounded-full border border-rose-100 transition">러시안블루</button>
-                      <button type="button" onClick={() => handleChipClick('기타/코숏')} className="text-xs bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold px-2.5 py-1 rounded-full border border-slate-200 transition">기타/코숏</button>
                     </>
                   )}
                 </div>
@@ -350,7 +369,7 @@ export default function Home() {
                 type="submit"
                 className="w-full bg-rose-500 hover:bg-rose-600 text-white font-extrabold py-4 rounded-2xl shadow-lg shadow-rose-500/30 transition text-base mt-2"
               >
-                🔍 PetFit 상담 신청하기
+                🔍 플랜별 맞춤 견적 확인하기
               </button>
             </form>
           </div>
@@ -396,7 +415,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 6. [전체 보험사 한번에 비교] 단계별 인터랙티브 모달 화면 */}
+      {/* 6. 모달 화면 (STEP 1 ~ STEP 4) */}
       {isCompareModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-4 overflow-y-auto">
           <div className="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl relative my-8">
@@ -415,7 +434,7 @@ export default function Home() {
                     STEP 1. 반려동물 선택
                   </span>
                   <h3 className="text-xl sm:text-2xl font-black text-slate-900 mt-1">
-                    어떤 반려동물의 보험료를 비교할까요? 🐾
+                    어떤 반려동물의 플랜을 비교할까요? 🐾
                   </h3>
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-6">
@@ -472,113 +491,97 @@ export default function Home() {
               </div>
             )}
 
-            {/* STEP 3: Top 5 보험사 + 노년기 구간 */}
+            {/* STEP 3: 플랜별 선택 (프리미엄, 스탠다드, 실속가득) */}
             {compareStep === 3 && (
               <div className="py-2">
                 <div className="text-center mb-5">
                   <span className="bg-rose-100 text-rose-600 text-xs font-bold px-3 py-1 rounded-full mb-2 inline-block">
-                    STEP 3. Top 5 보험사 연령대별 비교 및 선택
+                    STEP 3. 보장 플랜 선택
                   </span>
                   <h3 className="text-xl sm:text-2xl font-black text-slate-900 mt-1">
-                    [{selectedBreed}] 가입할 보험사를 선택해 주세요 💡
+                    [{selectedBreed}] 원하는 플랜을 선택해 주세요 💡
                   </h3>
-                  <p className="text-xs text-rose-500 font-bold mt-1">👇 마음에 드는 보험사 상품 카드를 클릭하면 선택됩니다!</p>
+                  <p className="text-xs text-rose-500 font-bold mt-1">👇 마음에 드는 플랜 카드를 클릭하면 선택됩니다!</p>
                 </div>
 
-                <div className="space-y-4 mb-6 max-h-[380px] overflow-y-auto pr-1">
+                {/* 🌟 플랜 선택 카드 3가지 (각각의 상단 안내 문구 추가) */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">
                   
-                  {/* 유년기 */}
-                  <div className="bg-rose-50/50 p-4 rounded-2xl border border-rose-200">
-                    <p className="font-extrabold text-slate-900 text-sm mb-2">👶 유년기 (0 ~ 3세)</p>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
-                      {[
-                        { name: '메리츠 펫퍼민트', price: '월 2.8만 ~ 3.5만' },
-                        { name: 'DB손해 프로미', price: '월 3.0만 ~ 3.7만' },
-                        { name: '현대해상 하이펫', price: '월 3.1만 ~ 3.8만' },
-                        { name: 'KB손보 금쪽같은', price: '월 2.9만 ~ 3.6만' },
-                        { name: '삼성화재 다이렉트', price: '월 3.2만 ~ 3.9만' },
-                      ].map((ins) => (
-                        <div 
-                          key={ins.name}
-                          onClick={() => setSelectedInsurance(ins.name)}
-                          className={`p-2.5 rounded-xl border cursor-pointer transition text-center ${
-                            selectedInsurance === ins.name 
-                              ? 'bg-rose-500 text-white border-rose-500 shadow-md font-bold' 
-                              : 'bg-white text-slate-700 hover:border-rose-300'
-                          }`}
-                        >
-                          <p className={selectedInsurance === ins.name ? 'text-white text-[11px]' : 'text-slate-400 text-[11px]'}>{ins.name}</p>
-                          <p className="font-black mt-0.5">{ins.price}</p>
-                        </div>
-                      ))}
+                  {/* 프리미엄 플랜 */}
+                  <div className="flex flex-col">
+                    <p className="text-[10px] font-bold text-rose-500 text-center mb-1">✨ 가장 높은 보장 한도와 본인부담금 최소화</p>
+                    <div
+                      onClick={() => setSelectedPlan('프리미엄 플랜 (보상비율 70%)')}
+                      className={`p-4 rounded-2xl border cursor-pointer transition text-center flex flex-col justify-between flex-1 ${
+                        selectedPlan === '프리미엄 플랜 (보상비율 70%)'
+                          ? 'bg-rose-500 text-white border-rose-500 shadow-lg font-bold scale-105'
+                          : 'bg-white text-slate-700 hover:border-rose-300 border-slate-200'
+                      }`}
+                    >
+                      <div>
+                        <p className={selectedPlan === '프리미엄 플랜 (보상비율 70%)' ? 'text-rose-100 text-xs' : 'text-slate-400 text-xs'}>보상비율 70%</p>
+                        <p className="font-extrabold text-sm mt-1">프리미엄 플랜</p>
+                      </div>
+                      <p className={`font-black mt-3 text-sm ${selectedPlan === '프리미엄 플랜 (보상비율 70%)' ? 'text-white' : 'text-rose-500'}`}>월 6만 ~ 7만원</p>
                     </div>
                   </div>
 
-                  {/* 청년기 */}
-                  <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200">
-                    <p className="font-extrabold text-slate-900 text-sm mb-2">👦 청년기 (4 ~ 6세)</p>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
-                      {[
-                        { name: '메리츠 펫퍼민트', price: '월 3.8만 ~ 4.6만' },
-                        { name: 'DB손해 프로미', price: '월 4.0만 ~ 4.8만' },
-                        { name: '현대해상 하이펫', price: '월 4.1만 ~ 4.9만' },
-                        { name: 'KB손보 금쪽같은', price: '월 3.9만 ~ 4.7만' },
-                        { name: '삼성화재 다이렉트', price: '월 4.2만 ~ 5.0만' },
-                      ].map((ins) => (
-                        <div 
-                          key={ins.name}
-                          onClick={() => setSelectedInsurance(ins.name)}
-                          className={`p-2.5 rounded-xl border cursor-pointer transition text-center ${
-                            selectedInsurance === ins.name 
-                              ? 'bg-rose-500 text-white border-rose-500 shadow-md font-bold' 
-                              : 'bg-white text-slate-700 hover:border-rose-300'
-                          }`}
-                        >
-                          <p className={selectedInsurance === ins.name ? 'text-white text-[11px]' : 'text-slate-400 text-[11px]'}>{ins.name}</p>
-                          <p className="font-black mt-0.5">{ins.price}</p>
-                        </div>
-                      ))}
+                  {/* 스탠다드 플랜 */}
+                  <div className="flex flex-col">
+                    <p className="text-[10px] font-bold text-rose-500 text-center mb-1">✨ 가장 선호되는 대중적인 플랜</p>
+                    <div
+                      onClick={() => setSelectedPlan('스탠다드 플랜 (보상비율 70%)')}
+                      className={`p-4 rounded-2xl border cursor-pointer transition text-center flex flex-col justify-between flex-1 ${
+                        selectedPlan === '스탠다드 플랜 (보상비율 70%)'
+                          ? 'bg-rose-500 text-white border-rose-500 shadow-lg font-bold scale-105'
+                          : 'bg-white text-slate-700 hover:border-rose-300 border-slate-200'
+                      }`}
+                    >
+                      <div>
+                        <p className={selectedPlan === '스탠다드 플랜 (보상비율 70%)' ? 'text-rose-100 text-xs' : 'text-slate-400 text-xs'}>보상비율 70% 또는 60%</p>
+                        <p className="font-extrabold text-sm mt-1">스탠다드 플랜</p>
+                      </div>
+                      <p className={`font-black mt-3 text-sm ${selectedPlan === '스탠다드 플랜 (보상비율 70%)' ? 'text-white' : 'text-rose-500'}`}>월 5만 ~ 6만원</p>
                     </div>
                   </div>
 
-                  {/* 노년기 */}
-                  <div className="bg-orange-50/50 p-4 rounded-2xl border border-orange-200">
-                    <p className="font-extrabold text-slate-900 text-sm mb-2">👵 노년기 (7세 이상 시니어)</p>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
-                      {[
-                        { name: '메리츠 펫퍼민트', price: '월 5.5만 ~ 7.2만' },
-                        { name: 'DB손해 프로미', price: '월 5.8만 ~ 7.5만' },
-                        { name: '현대해상 하이펫', price: '월 6.0만 ~ 7.8만' },
-                        { name: 'KB손보 금쪽같은', price: '월 5.7만 ~ 7.3만' },
-                        { name: '삼성화재 다이렉트', price: '월 6.2만 ~ 8.0만' },
-                      ].map((ins) => (
-                        <div 
-                          key={ins.name}
-                          onClick={() => setSelectedInsurance(ins.name)}
-                          className={`p-2.5 rounded-xl border cursor-pointer transition text-center ${
-                            selectedInsurance === ins.name 
-                              ? 'bg-rose-500 text-white border-rose-500 shadow-md font-bold' 
-                              : 'bg-white text-slate-700 hover:border-orange-300'
-                          }`}
-                        >
-                          <p className={selectedInsurance === ins.name ? 'text-white text-[11px]' : 'text-slate-400 text-[11px]'}>{ins.name}</p>
-                          <p className="font-black mt-0.5">{ins.price}</p>
-                        </div>
-                      ))}
+                  {/* 실속가득 플랜 */}
+                  <div className="flex flex-col">
+                    <p className="text-[10px] font-bold text-rose-500 text-center mb-1">✨ 합리적인 보험료 중심의 실속형 플랜</p>
+                    <div
+                      onClick={() => setSelectedPlan('실속가득 플랜 (보상비율 50%)')}
+                      className={`p-4 rounded-2xl border cursor-pointer transition text-center flex flex-col justify-between flex-1 ${
+                        selectedPlan === '실속가득 플랜 (보상비율 50%)'
+                          ? 'bg-rose-500 text-white border-rose-500 shadow-lg font-bold scale-105'
+                          : 'bg-white text-slate-700 hover:border-rose-300 border-slate-200'
+                      }`}
+                    >
+                      <div>
+                        <p className={selectedPlan === '실속가득 플랜 (보상비율 50%)' ? 'text-rose-100 text-xs' : 'text-slate-400 text-xs'}>보상비율 50%</p>
+                        <p className="font-extrabold text-sm mt-1">실속가득 플랜</p>
+                      </div>
+                      <p className={`font-black mt-3 text-sm ${selectedPlan === '실속가득 플랜 (보상비율 50%)' ? 'text-white' : 'text-rose-500'}`}>월 3만 ~ 4만원</p>
                     </div>
                   </div>
 
+                </div>
+
+                {/* 빨간 안내 문구 */}
+                <div className="mb-5 text-center">
+                  <p className="text-[11px] font-bold text-red-500">
+                    ⚠️ 실제 보험료는 반려동물의 품종, 나이 등에 따라 상이할 수 있습니다.
+                  </p>
                 </div>
 
                 <div className="space-y-2">
                   <div className="bg-rose-50 p-3 rounded-xl border border-rose-200 text-center text-xs font-bold text-rose-600 mb-2">
-                    ✨ 선택된 보험사: <span className="underline text-sm">{selectedInsurance}</span>
+                    ✨ 선택된 플랜: <span className="underline text-sm">{selectedPlan}</span>
                   </div>
                   <button
                     onClick={() => setCompareStep(4)}
                     className="w-full bg-rose-500 hover:bg-rose-600 text-white font-extrabold py-3.5 rounded-2xl transition text-sm shadow-lg shadow-rose-500/25"
                   >
-                    💌 이 조건으로 맞춤 견적 리포트 무료 신청하기
+                    💌 이 플랜으로 맞춤 견적 리포트 무료 신청하기
                   </button>
                   <button
                     onClick={() => setCompareStep(2)}
@@ -590,7 +593,7 @@ export default function Home() {
               </div>
             )}
 
-            {/* STEP 4: 최종 DB 신청 폼 (우리 아이 이름 포함 자동 연동) */}
+            {/* STEP 4: 최종 DB 신청 폼 */}
             {compareStep === 4 && (
               <form onSubmit={handleDbSubmit} className="py-2">
                 <div className="text-center mb-5">
@@ -598,16 +601,15 @@ export default function Home() {
                     STEP 4. 무료 리포트 신청 폼
                   </span>
                   <h3 className="text-xl sm:text-2xl font-black text-slate-900 mt-1">
-                    [{selectedInsurance}] 최종 맞춤 견적 신청
+                    [{selectedPlan}] 최종 맞춤 견적 신청
                   </h3>
                   <p className="text-slate-500 text-xs mt-1">
-                    선택하신 보험사와 상담 방식을 확인 후 접수해 주세요.
+                    선택하신 플랜과 상담 방식을 확인 후 접수해 주세요.
                   </p>
                 </div>
 
                 <div className="space-y-3.5 mb-6 max-h-[380px] overflow-y-auto pr-1">
                   
-                  {/* 🌟 우리 아이 이름 & 보호자 성함 */}
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <label className="block text-xs font-bold text-slate-600 mb-1">우리 아이 이름</label>
@@ -635,7 +637,6 @@ export default function Home() {
                     </div>
                   </div>
 
-                  {/* 휴대폰 번호 & 최종 체중 */}
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <label className="block text-xs font-bold text-slate-600 mb-1">휴대폰 번호</label>
@@ -666,7 +667,34 @@ export default function Home() {
                     </div>
                   </div>
 
-                  {/* 중성화 수술 여부 */}
+                  <div>
+                    <label className="block text-xs font-bold text-slate-600 mb-1">반려동물 성별</label>
+                    <div className="grid grid-cols-2 gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => setApplicantInfo({ ...applicantInfo, gender: '남아 (♂)' })}
+                        className={`py-2.5 rounded-xl font-bold text-xs transition ${
+                          applicantInfo.gender === '남아 (♂)'
+                            ? 'bg-rose-500 text-white shadow-sm'
+                            : 'bg-slate-50 text-slate-500 border border-slate-200 hover:bg-slate-100'
+                        }`}
+                      >
+                        남아 ♂
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setApplicantInfo({ ...applicantInfo, gender: '여아 (♀)' })}
+                        className={`py-2.5 rounded-xl font-bold text-xs transition ${
+                          applicantInfo.gender === '여아 (♀)'
+                            ? 'bg-rose-500 text-white shadow-sm'
+                            : 'bg-slate-50 text-slate-500 border border-slate-200 hover:bg-slate-100'
+                        }`}
+                      >
+                        여아 ♀
+                      </button>
+                    </div>
+                  </div>
+
                   <div>
                     <label className="block text-xs font-bold text-slate-600 mb-1">중성화 수술 여부</label>
                     <div className="grid grid-cols-2 gap-1.5">
@@ -695,7 +723,6 @@ export default function Home() {
                     </div>
                   </div>
 
-                  {/* 상담 방법 선택 */}
                   <div>
                     <label className="block text-xs font-bold text-slate-600 mb-1.5">상담 방법 선택</label>
                     <div className="grid grid-cols-2 gap-2">
@@ -727,7 +754,6 @@ export default function Home() {
                     </div>
                   </div>
 
-                  {/* 추가 요청사항 */}
                   <div>
                     <label className="block text-xs font-bold text-slate-600 mb-1">추가 요청사항 (선택)</label>
                     <textarea
@@ -754,7 +780,7 @@ export default function Home() {
                     onClick={() => setCompareStep(3)}
                     className="w-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold py-2.5 rounded-2xl text-xs transition"
                   >
-                    ← 가격 비교표로 돌아가기
+                    ← 플랜 선택으로 돌아가기
                   </button>
                 </div>
               </form>
@@ -773,7 +799,7 @@ export default function Home() {
           </div>
           <p>© 2026 PetFit Inc. All rights reserved.</p>
           <p className="text-slate-500 text-[11px]">
-            PetFit은 국내 주요 손해보험사의 펫보험 상품을 한눈에 비교·분석해 드리는 스마트 펫케어 통합 플랫폼입니다.
+            PetFit은 반려견·반려묘의 보장 플랜을 한눈에 비교·분석해 드리는 스마트 펫케어 통합 플랫폼입니다.
           </p>
         </div>
       </footer>
