@@ -140,7 +140,6 @@ export default function Home() {
       <section className="py-8 sm:py-16 px-4">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-12 gap-8 items-stretch">
           
-          {/* 좌측 히어로 카드 */}
           <div className="lg:col-span-8 bg-gradient-to-br from-white via-rose-50/20 to-orange-50/20 rounded-[2.5rem] p-6 sm:p-12 shadow-xl border border-rose-100/70 flex flex-col justify-between relative overflow-hidden">
             
             <div className="grid lg:grid-cols-12 gap-6 items-center relative z-10">
@@ -162,7 +161,7 @@ export default function Home() {
                   <img 
                     src="/main-poster.png" 
                     alt="강아지와 고양이" 
-                    className="w-full h-auto object-cover rounded-xl"
+                    className="w-full h-auto object-cover rounded-xl block"
                   />
                 </div>
               </div>
@@ -192,7 +191,6 @@ export default function Home() {
 
           </div>
 
-          {/* 우측 정보 입력 폼 카드 */}
           <div ref={formRef} className="lg:col-span-4 bg-white rounded-[2.5rem] p-6 sm:p-8 shadow-2xl border border-slate-100 lg:sticky lg:top-24 flex flex-col justify-center scroll-mt-24">
             <div className="flex items-center justify-between mb-6">
               <div>
@@ -358,7 +356,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 🌟 모바일 하단 안전영역 고려한 고정(Fixed) 플로팅 "신청하기" 배지 바 */}
+      {/* 모바일 하단 고정 플로팅 "신청하기" 배지 바 */}
       <div className="fixed bottom-6 left-4 right-4 z-50 sm:hidden">
         <div className="bg-slate-900/95 backdrop-blur-md text-white px-5 py-3.5 rounded-2xl shadow-2xl border border-slate-700/50 flex items-center justify-between gap-3 animate-bounce">
           <div>
@@ -400,13 +398,14 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="w-full bg-white flex flex-col items-center py-8">
-        <div className="w-full max-w-4xl mx-auto flex flex-col">
-          <img src="/pet-poster-1.png" alt="포스터 1" className="w-full h-auto block m-0 p-0" />
-          <img src="/pet-poster-2.png" alt="포스터 2" className="w-full h-auto block m-0 p-0" />
-          <img src="/pet-poster-3.png" alt="포스터 3" className="w-full h-auto block m-0 p-0" />
-          <img src="/pet-poster-4.png" alt="포스터 4" className="w-full h-auto block m-0 p-0" />
-          <img src="/pet-poster-5.png" alt="포스터 5" className="w-full h-auto block m-0 p-0" />
+      {/* 🌟 포스터 이미지 하단 공백 제거 (block 및 leading-none 적용) */}
+      <section className="w-full bg-white flex flex-col items-center">
+        <div className="w-full max-w-4xl mx-auto flex flex-col leading-none">
+          <img src="/pet-poster-1.png" alt="포스터 1" className="w-full h-auto block m-0 p-0 border-0" />
+          <img src="/pet-poster-2.png" alt="포스터 2" className="w-full h-auto block m-0 p-0 border-0" />
+          <img src="/pet-poster-3.png" alt="포스터 3" className="w-full h-auto block m-0 p-0 border-0" />
+          <img src="/pet-poster-4.png" alt="포스터 4" className="w-full h-auto block m-0 p-0 border-0" />
+          <img src="/pet-poster-5.png" alt="포스터 5" className="w-full h-auto block m-0 p-0 border-0" />
         </div>
       </section>
 
@@ -525,7 +524,7 @@ export default function Home() {
         </div>
       )}
 
-      <footer className="bg-slate-900 text-slate-400 text-xs py-10 px-4 border-t border-slate-800">
+      <footer className="bg-slate-900 text-slate-400 text-xs py-10 px-4 m-0 border-t border-slate-800">
         <div className="max-w-6xl mx-auto space-y-3 text-center sm:text-left">
           <div className="flex items-center justify-center sm:justify-start gap-2">
             <span className="text-lg">🐾</span>
