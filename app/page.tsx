@@ -1,8 +1,14 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 
 export default function Home() {
+  const formRef = useRef<HTMLDivElement>(null);
+
+  const scrollToForm = () => {
+    formRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   const [petType, setPetType] = useState<'dog' | 'cat'>('dog');
   const [formData, setFormData] = useState({
     petName: '',
@@ -108,7 +114,8 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans antialiased selection:bg-rose-500 selection:text-white">
+    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans antialiased selection:bg-rose-500 selection:text-white pb-28 sm:pb-0">
+      {/* 상단 네비게이션 */}
       <header className="bg-white/90 backdrop-blur-md border-b border-slate-100 sticky top-0 z-40 transition-all">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <div onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-2 cursor-pointer group">
@@ -129,9 +136,11 @@ export default function Home() {
         </div>
       </header>
 
+      {/* 메인 히어로 섹션 */}
       <section className="py-8 sm:py-16 px-4">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-12 gap-8 items-stretch">
           
+          {/* 좌측 히어로 카드 */}
           <div className="lg:col-span-8 bg-gradient-to-br from-white via-rose-50/20 to-orange-50/20 rounded-[2.5rem] p-6 sm:p-12 shadow-xl border border-rose-100/70 flex flex-col justify-between relative overflow-hidden">
             
             <div className="grid lg:grid-cols-12 gap-6 items-center relative z-10">
@@ -183,7 +192,8 @@ export default function Home() {
 
           </div>
 
-          <div className="lg:col-span-4 bg-white rounded-[2.5rem] p-6 sm:p-8 shadow-2xl border border-slate-100 lg:sticky lg:top-24 flex flex-col justify-center">
+          {/* 우측 정보 입력 폼 카드 */}
+          <div ref={formRef} className="lg:col-span-4 bg-white rounded-[2.5rem] p-6 sm:p-8 shadow-2xl border border-slate-100 lg:sticky lg:top-24 flex flex-col justify-center scroll-mt-24">
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2 className="text-xl font-extrabold text-slate-900">맞춤 견적 간편 신청</h2>
@@ -347,6 +357,22 @@ export default function Home() {
 
         </div>
       </section>
+
+      {/* 🌟 모바일 하단 안전영역 고려한 고정(Fixed) 플로팅 "신청하기" 배지 바 */}
+      <div className="fixed bottom-6 left-4 right-4 z-50 sm:hidden">
+        <div className="bg-slate-900/95 backdrop-blur-md text-white px-5 py-3.5 rounded-2xl shadow-2xl border border-slate-700/50 flex items-center justify-between gap-3 animate-bounce">
+          <div>
+            <p className="text-xs font-bold text-slate-200">우리 아이 맞춤 보험료는?</p>
+            <p className="text-[11px] text-rose-400 font-extrabold">1분 만에 무료 견적 확인하기</p>
+          </div>
+          <button
+            onClick={scrollToForm}
+            className="bg-rose-500 hover:bg-rose-600 text-white font-black px-5 py-2.5 rounded-xl text-xs shadow-md shadow-rose-500/40 active:scale-95 transition flex-shrink-0"
+          >
+            ✨ 신청하기
+          </button>
+        </div>
+      </div>
 
       <section className="py-16 px-4 bg-white border-y border-slate-100">
         <div className="max-w-6xl mx-auto text-center">
