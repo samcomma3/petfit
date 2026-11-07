@@ -129,7 +129,7 @@ export default function Home() {
     <div className="min-h-screen bg-rose-50/40 text-slate-800 font-sans">
       {/* 1. 상단 네비게이션 */}
       <header className="bg-white/90 backdrop-blur-md border-b border-rose-100 sticky top-0 z-40 shadow-sm">
-        <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
           <div 
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             className="flex items-center gap-2 cursor-pointer"
@@ -154,26 +154,48 @@ export default function Home() {
         </div>
       </header>
 
-      {/* 2. 메인 히어로 & 실시간 산정 폼 */}
-      <section id="calc-section" className="py-12 sm:py-20 px-4 bg-gradient-to-b from-rose-100/60 via-orange-50/30 to-rose-50/20">
-        <div className="max-w-5xl mx-auto grid md:grid-cols-12 gap-8 items-center">
+      {/* 2. 메인 히어로 섹션 (첫번째 이미지처럼 좌측 카드 / 우측 폼 카드 분리) */}
+      <section id="calc-section" className="py-12 sm:py-16 px-4 bg-gradient-to-b from-rose-100/60 via-orange-50/30 to-rose-50/20">
+        <div className="max-w-6xl mx-auto grid md:grid-cols-12 gap-6 items-center">
           
-          <div className="md:col-span-6 space-y-5 text-center md:text-left">
-            <div className="inline-flex items-center gap-2 bg-white/90 border border-rose-200 px-4 py-1.5 rounded-full text-xs font-bold text-rose-600 shadow-sm">
-              ✨ 내 아이 맞춤 펫보험 비교 플랫폼 PetFit
+          {/* 🌟 좌측 정보 & 이미지 카드 (첫번째 이미지 스타일) */}
+          <div className="md:col-span-6 bg-white rounded-3xl p-6 sm:p-10 shadow-xl border border-rose-100/80 flex flex-col justify-between relative overflow-hidden min-h-[580px]">
+            <div className="space-y-4 z-10">
+              <div className="inline-flex items-center gap-2 bg-rose-50 border border-rose-200 px-4 py-1.5 rounded-full text-xs font-bold text-rose-600 shadow-sm">
+                ✨ 내 아이 맞춤 펫보험 비교 플랫폼 PetFit
+              </div>
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 leading-tight tracking-tight">
+                우리 아이에게 딱 맞는 플랜으로,<br />
+                <span className="text-rose-500 underline decoration-rose-200 decoration-wavy decoration-2">
+                  합리적인 펫보험
+                </span>을 설계해 드립니다!
+              </h1>
+              <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+                복잡한 비교는 그만.<br />
+                <strong>PetFit</strong>이 프리미엄, 스탠다드, 실속가득 플랜별로 최적의 보장 비율을 찾아드립니다.
+              </p>
             </div>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight tracking-tight">
-              우리 아이에게 딱 맞는 플랜으로,<br />
-              <span className="text-rose-500 underline decoration-rose-200 decoration-wavy decoration-2">
-                합리적인 펫보험
-              </span>을 설계해 드립니다!
-            </h1>
-            <p className="text-slate-700 text-sm sm:text-base leading-relaxed max-w-md bg-white/40 md:bg-transparent p-2 rounded-lg">
-              복잡한 비교는 그만.<br />
-              <strong>PetFit</strong>이 프리미엄, 스탠다드, 실속가득 플랜별로 최적의 보장 비율을 찾아드립니다.
-            </p>
+
+            {/* 좌측 하단에 들어갈 일러스트/이미지 영역 (원하는 이미지 파일명으로 변경 가능) */}
+            <div className="mt-6 rounded-2xl overflow-hidden bg-rose-50/50 border border-rose-100 flex items-center justify-center relative min-h-[220px]">
+              {/* 실제 이미지를 넣을 때 아래 img 태그의 src를 변경하세요 (예: /pet-hero.jpg) */}
+              <img 
+                src="/pet-hero.jpg" 
+                alt="반려동물과 보호자" 
+                className="w-full h-full object-cover absolute inset-0 opacity-90"
+                onError={(e) => {
+                  // 이미지가 없을 경우 대체 아이콘 표시
+                  e.currentTarget.style.display = 'none';
+                }}
+              />
+              <div className="text-center p-6 z-0">
+                <span className="text-5xl">🐶🐱</span>
+                <p className="text-xs font-bold text-slate-400 mt-2">소중한 우리 아이와 행복한 동행</p>
+              </div>
+            </div>
           </div>
 
+          {/* 🌟 우측 정보 입력 폼 카드 */}
           <div className="md:col-span-6 bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-rose-100/80">
             <div className="flex items-center justify-between mb-4">
               <div>
@@ -491,7 +513,7 @@ export default function Home() {
               </div>
             )}
 
-            {/* STEP 3: 플랜별 선택 (프리미엄, 스탠다드, 실속가득) */}
+            {/* STEP 3: 플랜별 선택 */}
             {compareStep === 3 && (
               <div className="py-2">
                 <div className="text-center mb-5">
@@ -504,9 +526,7 @@ export default function Home() {
                   <p className="text-xs text-rose-500 font-bold mt-1">👇 마음에 드는 플랜 카드를 클릭하면 선택됩니다!</p>
                 </div>
 
-                {/* 🌟 플랜 선택 카드 3가지 (각각의 상단 안내 문구 추가) */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">
-                  
                   {/* 프리미엄 플랜 */}
                   <div className="flex flex-col">
                     <p className="text-[10px] font-bold text-rose-500 text-center mb-1">✨ 가장 높은 보장 한도와 본인부담금 최소화</p>
@@ -563,10 +583,8 @@ export default function Home() {
                       <p className={`font-black mt-3 text-sm ${selectedPlan === '실속가득 플랜 (보상비율 50%)' ? 'text-white' : 'text-rose-500'}`}>월 3만 ~ 4만원</p>
                     </div>
                   </div>
-
                 </div>
 
-                {/* 빨간 안내 문구 */}
                 <div className="mb-5 text-center">
                   <p className="text-[11px] font-bold text-red-500">
                     ⚠️ 실제 보험료는 반려동물의 품종, 나이 등에 따라 상이할 수 있습니다.
@@ -788,7 +806,45 @@ export default function Home() {
 
           </div>
         </div>
-      )}
+      </section>
+
+      {/* 3. 왜 PetFit일까요? */}
+      <section className="py-16 px-4 bg-white border-y border-rose-100/60">
+        <div className="max-w-5xl mx-auto text-center">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
+            왜 반려인들이 <span className="text-rose-500">PetFit</span>에서 비교할까요?
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-8">
+            <div className="bg-rose-50/50 p-6 rounded-3xl border border-rose-100">
+              <p className="text-3xl font-black text-rose-500 mb-1">15만건+</p>
+              <p className="text-xs font-bold text-slate-800">누적 비교 견적 건수</p>
+            </div>
+            <div className="bg-rose-50/50 p-6 rounded-3xl border border-rose-100">
+              <p className="text-3xl font-black text-rose-500 mb-1">99.1%</p>
+              <p className="text-xs font-bold text-slate-800">보장 매칭 만족도</p>
+            </div>
+            <div className="bg-rose-50/50 p-6 rounded-3xl border border-rose-100">
+              <p className="text-3xl font-black text-rose-500 mb-1">600+</p>
+              <p className="text-xs font-bold text-slate-800">제휴 자동청구 병원</p>
+            </div>
+            <div className="bg-rose-50/50 p-6 rounded-3xl border border-rose-100">
+              <p className="text-3xl font-black text-rose-500 mb-1">최대 30%</p>
+              <p className="text-xs font-bold text-slate-800">보험료 절감 효과</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. 포스터 5단 섹션 */}
+      <section className="w-full bg-white flex flex-col items-center">
+        <div className="w-full max-w-4xl mx-auto flex flex-col">
+          <img src="/pet-poster-1.png" alt="포스터 1" className="w-full h-auto block m-0 p-0" />
+          <img src="/pet-poster-2.png" alt="포스터 2" className="w-full h-auto block m-0 p-0" />
+          <img src="/pet-poster-3.png" alt="포스터 3" className="w-full h-auto data block m-0 p-0" />
+          <img src="/pet-poster-4.png" alt="포스터 4" className="w-full h-auto block m-0 p-0" />
+          <img src="/pet-poster-5.png" alt="포스터 5" className="w-full h-auto block m-0 p-0" />
+        </div>
+      </section>
 
       {/* 푸터 */}
       <footer className="bg-slate-900 text-slate-400 text-xs py-10 px-4 border-t border-slate-800">
