@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 
 export default function Home() {
-  // 메인 폼 상태 (태어난 해, 성별, 체중, 중성화 여부 포함)
+  // 메인 폼 상태
   const [petType, setPetType] = useState<'dog' | 'cat'>('dog');
   const [formData, setFormData] = useState({
     petName: '',
@@ -158,38 +158,38 @@ export default function Home() {
       <section id="calc-section" className="py-10 sm:py-16 px-4 bg-gradient-to-b from-rose-100/60 via-orange-50/30 to-rose-50/20">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
           
-          {/* 🌟 좌측 카드 (텍스트 겹침 방지 적용) */}
-          <div className="lg:col-span-8 bg-white rounded-[2rem] p-8 sm:p-12 shadow-xl border border-rose-100/80 flex flex-col justify-between min-h-[720px] relative overflow-hidden">
+          {/* 🌟 좌측 카드 */}
+          <div className="lg:col-span-8 bg-white rounded-[2rem] p-6 sm:p-12 shadow-xl border border-rose-100/80 flex flex-col justify-between relative overflow-hidden">
             
             {/* 배지 및 텍스트 묶음 */}
-            <div className="space-y-5 relative z-20 w-[95%] sm:w-[75%] md:w-[65%] lg:w-[60%] xl:w-[50%] break-keep">
+            <div className="space-y-4 sm:space-y-5 relative z-20 w-full lg:w-[60%] xl:w-[50%] break-keep">
               <div className="inline-flex items-center gap-2 bg-rose-50 border border-rose-200 px-4 py-1.5 rounded-full text-xs font-bold text-rose-600 shadow-sm">
                 ✨ 내 아이 맞춤 펫보험 비교 플랫폼 PetFit
               </div>
-              <h1 className="text-3xl sm:text-4xl lg:text-[2.75rem] font-extrabold text-slate-900 leading-[1.3] tracking-tight">
+              <h1 className="text-2xl sm:text-4xl lg:text-[2.75rem] font-extrabold text-slate-900 leading-[1.3] tracking-tight">
                 우리 아이에게 딱 맞는 플랜으로,<br />
                 <span className="text-rose-500 underline decoration-rose-200 decoration-wavy decoration-2">
                   합리적인 펫보험
                 </span>을 설계해 드립니다!
               </h1>
-              <p className="text-slate-600 text-base sm:text-lg leading-relaxed">
+              <p className="text-slate-600 text-sm sm:text-lg leading-relaxed">
                 복잡한 비교는 그만.<br />
                 <strong>PetFit</strong>이 프리미엄, 스탠다드, 실속가득 플랜별로<br className="hidden sm:block" /> 최적의 보장 비율을 찾아드립니다.
               </p>
             </div>
 
-            {/* 📸 강아지·고양이 이미지 (main-poster.png) */}
-            <div className="absolute bottom-0 right-[-10px] sm:right-[-20px] w-[65%] sm:w-[55%] md:w-[50%] lg:w-[55%] xl:w-[55%] max-w-[700px] pointer-events-none z-10 flex justify-end">
+            {/* 📸 강아지·고양이 이미지 (모바일에서는 크기를 줄이고 투명도를 주거나 하단에 자연스럽게 배치, PC lg 이상에서는 우측 하단 절대 배치) */}
+            <div className="my-6 lg:my-0 lg:absolute lg:bottom-0 lg:right-[-20px] w-full lg:w-[55%] xl:w-[55%] max-w-[500px] lg:max-w-[700px] pointer-events-none z-10 flex justify-center lg:justify-end opacity-90 lg:opacity-100">
               <img 
                 src="/main-poster.png" 
                 alt="강아지와 고양이" 
-                className="w-full h-auto object-contain object-bottom"
+                className="w-[80%] sm:w-[60%] lg:w-full h-auto object-contain object-bottom"
               />
             </div>
 
             {/* 하단 핵심 혜택 4가지 카드 */}
-            <div className="mt-20 sm:mt-32 z-20 relative w-full sm:w-[85%] md:w-[75%] lg:w-[65%] xl:w-[60%]">
-              <div className="bg-white/90 backdrop-blur-md p-5 rounded-2xl border border-rose-100 shadow-sm">
+            <div className="z-25 relative w-full lg:w-[65%] xl:w-[60%] mt-2 lg:mt-32">
+              <div className="bg-white/95 backdrop-blur-md p-4 sm:p-5 rounded-2xl border border-rose-100 shadow-sm">
                 <div className="text-[12px] font-bold text-rose-500 mb-3 flex items-center gap-1">
                   <span>🔥</span> 핵심 혜택 4가지
                 </div>
@@ -212,7 +212,7 @@ export default function Home() {
 
           </div>
 
-          {/* 우측 정보 입력 폼 카드 (상세 항목 모두 복구) */}
+          {/* 우측 정보 입력 폼 카드 */}
           <div className="lg:col-span-4 bg-white rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-rose-100/80 flex flex-col justify-center">
             <div className="flex items-center justify-between mb-4">
               <div>
