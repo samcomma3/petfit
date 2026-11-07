@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 
 export default function Home() {
-  // 메인 폼 상태
+  // 메인 폼 상태 (태어난 해, 성별, 체중, 중성화 여부 포함)
   const [petType, setPetType] = useState<'dog' | 'cat'>('dog');
   const [formData, setFormData] = useState({
     petName: '',
@@ -15,13 +15,13 @@ export default function Home() {
     ownerPhone: '',
   });
 
-  // [플랜 비교] 모달 및 단계별 상태 관리 (STEP 4)
+  // [플랜 비교] 모달 상태 관리 (STEP 3로 연결)
   const [isCompareModalOpen, setIsCompareModalOpen] = useState(false);
   const [compareStep, setCompareStep] = useState<1 | 2 | 3 | 4>(1); 
   const [selectedCategory, setSelectedCategory] = useState<'dog' | 'cat'>('dog');
   const [selectedBreed, setSelectedBreed] = useState('토이푸들 / 말티즈');
   
-  // 사용자가 선택한 플랜 상태 (프리미엄 / 스탠다드 / 실속가득)
+  // 사용자가 선택한 플랜 상태
   const [selectedPlan, setSelectedPlan] = useState('스탠다드 플랜 (보상비율 70%)');
   
   // 최종 DB 저장용 신청자 정보 상태
@@ -129,7 +129,7 @@ export default function Home() {
     <div className="min-h-screen bg-rose-50/40 text-slate-800 font-sans">
       {/* 1. 상단 네비게이션 */}
       <header className="bg-white/90 backdrop-blur-md border-b border-rose-100 sticky top-0 z-40 shadow-sm">
-        <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <div 
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             className="flex items-center gap-2 cursor-pointer"
@@ -154,60 +154,77 @@ export default function Home() {
         </div>
       </header>
 
-      {/* 2. 메인 히어로 섹션 (첫번째 이미지처럼 좌측 카드 / 우측 폼 카드 분리) */}
-      <section id="calc-section" className="py-12 sm:py-16 px-4 bg-gradient-to-b from-rose-100/60 via-orange-50/30 to-rose-50/20">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-12 gap-6 items-center">
+      {/* 2. 메인 히어로 섹션 */}
+      <section id="calc-section" className="py-10 sm:py-16 px-4 bg-gradient-to-b from-rose-100/60 via-orange-50/30 to-rose-50/20">
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
           
-          {/* 🌟 좌측 정보 & 이미지 카드 (첫번째 이미지 스타일) */}
-          <div className="md:col-span-6 bg-white rounded-3xl p-6 sm:p-10 shadow-xl border border-rose-100/80 flex flex-col justify-between relative overflow-hidden min-h-[580px]">
-            <div className="space-y-4 z-10">
+          {/* 🌟 좌측 카드 (텍스트 겹침 방지 적용) */}
+          <div className="lg:col-span-8 bg-white rounded-[2rem] p-8 sm:p-12 shadow-xl border border-rose-100/80 flex flex-col justify-between min-h-[720px] relative overflow-hidden">
+            
+            {/* 배지 및 텍스트 묶음 */}
+            <div className="space-y-5 relative z-20 w-[95%] sm:w-[75%] md:w-[65%] lg:w-[60%] xl:w-[50%] break-keep">
               <div className="inline-flex items-center gap-2 bg-rose-50 border border-rose-200 px-4 py-1.5 rounded-full text-xs font-bold text-rose-600 shadow-sm">
                 ✨ 내 아이 맞춤 펫보험 비교 플랫폼 PetFit
               </div>
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 leading-tight tracking-tight">
+              <h1 className="text-3xl sm:text-4xl lg:text-[2.75rem] font-extrabold text-slate-900 leading-[1.3] tracking-tight">
                 우리 아이에게 딱 맞는 플랜으로,<br />
                 <span className="text-rose-500 underline decoration-rose-200 decoration-wavy decoration-2">
                   합리적인 펫보험
                 </span>을 설계해 드립니다!
               </h1>
-              <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+              <p className="text-slate-600 text-base sm:text-lg leading-relaxed">
                 복잡한 비교는 그만.<br />
-                <strong>PetFit</strong>이 프리미엄, 스탠다드, 실속가득 플랜별로 최적의 보장 비율을 찾아드립니다.
+                <strong>PetFit</strong>이 프리미엄, 스탠다드, 실속가득 플랜별로<br className="hidden sm:block" /> 최적의 보장 비율을 찾아드립니다.
               </p>
             </div>
 
-            {/* 좌측 하단에 들어갈 일러스트/이미지 영역 (원하는 이미지 파일명으로 변경 가능) */}
-            <div className="mt-6 rounded-2xl overflow-hidden bg-rose-50/50 border border-rose-100 flex items-center justify-center relative min-h-[220px]">
-              {/* 실제 이미지를 넣을 때 아래 img 태그의 src를 변경하세요 (예: /pet-hero.jpg) */}
+            {/* 📸 강아지·고양이 이미지 (main-poster.png) */}
+            <div className="absolute bottom-0 right-[-10px] sm:right-[-20px] w-[65%] sm:w-[55%] md:w-[50%] lg:w-[55%] xl:w-[55%] max-w-[700px] pointer-events-none z-10 flex justify-end">
               <img 
-                src="/pet-hero.jpg" 
-                alt="반려동물과 보호자" 
-                className="w-full h-full object-cover absolute inset-0 opacity-90"
-                onError={(e) => {
-                  // 이미지가 없을 경우 대체 아이콘 표시
-                  e.currentTarget.style.display = 'none';
-                }}
+                src="/main-poster.png" 
+                alt="강아지와 고양이" 
+                className="w-full h-auto object-contain object-bottom"
               />
-              <div className="text-center p-6 z-0">
-                <span className="text-5xl">🐶🐱</span>
-                <p className="text-xs font-bold text-slate-400 mt-2">소중한 우리 아이와 행복한 동행</p>
+            </div>
+
+            {/* 하단 핵심 혜택 4가지 카드 */}
+            <div className="mt-20 sm:mt-32 z-20 relative w-full sm:w-[85%] md:w-[75%] lg:w-[65%] xl:w-[60%]">
+              <div className="bg-white/90 backdrop-blur-md p-5 rounded-2xl border border-rose-100 shadow-sm">
+                <div className="text-[12px] font-bold text-rose-500 mb-3 flex items-center gap-1">
+                  <span>🔥</span> 핵심 혜택 4가지
+                </div>
+                <div className="grid grid-cols-2 gap-3 text-xs sm:text-sm font-bold text-slate-700">
+                  <div className="bg-rose-50/60 p-3 rounded-xl border border-rose-100 flex items-center gap-2">
+                    <span className="text-lg">🏥</span> 24시 제휴병원 보장
+                  </div>
+                  <div className="bg-rose-50/60 p-3 rounded-xl border border-rose-100 flex items-center gap-2">
+                    <span className="text-lg">⚡</span> 간편 청구 시스템
+                  </div>
+                  <div className="bg-rose-50/60 p-3 rounded-xl border border-rose-100 flex items-center gap-2">
+                    <span className="text-lg">🛡️</span> 슬개골·피부 특화
+                  </div>
+                  <div className="bg-rose-50/60 p-3 rounded-xl border border-rose-100 flex items-center gap-2">
+                    <span className="text-lg">💰</span> 최대 30% 보험료 절감
+                  </div>
+                </div>
               </div>
             </div>
+
           </div>
 
-          {/* 🌟 우측 정보 입력 폼 카드 */}
-          <div className="md:col-span-6 bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-rose-100/80">
+          {/* 우측 정보 입력 폼 카드 (상세 항목 모두 복구) */}
+          <div className="lg:col-span-4 bg-white rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-rose-100/80 flex flex-col justify-center">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h2 className="text-xl font-bold text-slate-900">우리 아이를 위한 최적의 설계</h2>
-                <p className="text-xs text-slate-400 mt-0.5">우리 아이 정보를 입력하고 맞춤 플랜을 확인하세요.</p>
+                <h2 className="text-lg font-bold text-slate-900">우리 아이를 위한 최적의 설계</h2>
+                <p className="text-xs text-slate-400 mt-0.5">정보 입력하고 맞춤 플랜을 확인하세요.</p>
               </div>
               <span className="text-3xl">📊</span>
             </div>
 
             <form onSubmit={handleCalculate} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-slate-600 mb-2">반려동물 분류</label>
+                <label className="block text-xs font-bold text-slate-600 mb-1.5">반려동물 분류</label>
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     type="button"
@@ -215,13 +232,13 @@ export default function Home() {
                       setPetType('dog');
                       setFormData({ ...formData, breed: '' });
                     }}
-                    className={`py-3 rounded-2xl font-bold text-sm transition flex items-center justify-center gap-2 ${
+                    className={`py-3 rounded-2xl font-bold text-xs transition flex items-center justify-center gap-1.5 ${
                       petType === 'dog'
                         ? 'bg-rose-500 text-white shadow-md shadow-rose-500/25'
                         : 'bg-slate-50 text-slate-500 border border-slate-200 hover:bg-slate-100'
                     }`}
                   >
-                    🐶 강아지 (Dog)
+                    🐶 강아지
                   </button>
                   <button
                     type="button"
@@ -229,18 +246,18 @@ export default function Home() {
                       setPetType('cat');
                       setFormData({ ...formData, breed: '' });
                     }}
-                    className={`py-3 rounded-2xl font-bold text-sm transition flex items-center justify-center gap-2 ${
+                    className={`py-3 rounded-2xl font-bold text-xs transition flex items-center justify-center gap-1.5 ${
                       petType === 'cat'
                         ? 'bg-rose-500 text-white shadow-md shadow-rose-500/25'
                         : 'bg-slate-50 text-slate-500 border border-slate-200 hover:bg-slate-100'
                     }`}
                   >
-                    🐱 고양이 (Cat)
+                    🐱 고양이
                   </button>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-2.5">
                 <div>
                   <label className="block text-xs font-bold text-slate-600 mb-1">우리 아이 이름</label>
                   <input
@@ -259,7 +276,7 @@ export default function Home() {
                     name="birthYear"
                     value={formData.birthYear}
                     onChange={handleChange}
-                    className="w-full px-3.5 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-400 text-sm bg-white"
+                    className="w-full px-3 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-400 text-xs bg-white"
                   >
                     {Array.from({ length: 20 }, (_, i) => 2026 - i).map((year) => (
                       <option key={year} value={year}>
@@ -276,7 +293,7 @@ export default function Home() {
                   <button
                     type="button"
                     onClick={() => setFormData({ ...formData, gender: '남아 (♂)' })}
-                    className={`py-3 rounded-xl font-bold text-xs transition ${
+                    className={`py-2.5 rounded-xl font-bold text-xs transition ${
                       formData.gender === '남아 (♂)'
                         ? 'bg-rose-500 text-white shadow-sm'
                         : 'bg-slate-50 text-slate-500 border border-slate-200 hover:bg-slate-100'
@@ -287,7 +304,7 @@ export default function Home() {
                   <button
                     type="button"
                     onClick={() => setFormData({ ...formData, gender: '여아 (♀)' })}
-                    className={`py-3 rounded-xl font-bold text-xs transition ${
+                    className={`py-2.5 rounded-xl font-bold text-xs transition ${
                       formData.gender === '여아 (♀)'
                         ? 'bg-rose-500 text-white shadow-sm'
                         : 'bg-slate-50 text-slate-500 border border-slate-200 hover:bg-slate-100'
@@ -304,71 +321,57 @@ export default function Home() {
                   type="text"
                   name="breed"
                   required
-                  placeholder={petType === 'dog' ? "반려동물 품종 입력 (예: 말티즈)" : "반려동물 품종 입력 (예: 코숏)"}
+                  placeholder={petType === 'dog' ? "예: 말티즈" : "예: 코리안숏헤어"}
                   value={formData.breed}
                   onChange={handleChange}
                   className="w-full px-3.5 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-400 text-sm"
                 />
                 <div className="mt-2 flex flex-wrap gap-1.5">
                   {petType === 'dog' ? (
-                    <>
-                      <button type="button" onClick={() => handleChipClick('토이푸들')} className="text-xs bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold px-2.5 py-1 rounded-full border border-rose-100 transition">토이푸들</button>
-                      <button type="button" onClick={() => handleChipClick('포메라니안')} className="text-xs bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold px-2.5 py-1 rounded-full border border-rose-100 transition">포메라니안</button>
-                      <button type="button" onClick={() => handleChipClick('비숑')} className="text-xs bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold px-2.5 py-1 rounded-full border border-rose-100 transition">비숑</button>
-                      <button type="button" onClick={() => handleChipClick('말티푸')} className="text-xs bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold px-2.5 py-1 rounded-full border border-rose-100 transition">말티푸</button>
-                      <button type="button" onClick={() => handleChipClick('말티즈 (몰티즈)')} className="text-xs bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold px-2.5 py-1 rounded-full border border-rose-100 transition">말티즈 (몰티즈)</button>
-                    </>
+                    ['토이푸들', '포메라니안', '비숑', '말티즈 (몰티즈)', '골든리트리버'].map(breed => (
+                      <button key={breed} type="button" onClick={() => handleChipClick(breed)} className="text-[10px] bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold px-2.5 py-1 rounded-full border border-rose-100 transition">{breed}</button>
+                    ))
                   ) : (
-                    <>
-                      <button type="button" onClick={() => handleChipClick('코리안숏헤어')} className="text-xs bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold px-2.5 py-1 rounded-full border border-rose-100 transition">코리안숏헤어</button>
-                      <button type="button" onClick={() => handleChipClick('페르시안')} className="text-xs bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold px-2.5 py-1 rounded-full border border-rose-100 transition">페르시안</button>
-                      <button type="button" onClick={() => handleChipClick('렉돌')} className="text-xs bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold px-2.5 py-1 rounded-full border border-rose-100 transition">렉돌</button>
-                    </>
+                    ['코리안숏헤어', '페르시안', '렉돌', '먼치킨'].map(breed => (
+                      <button key={breed} type="button" onClick={() => handleChipClick(breed)} className="text-[10px] bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold px-2.5 py-1 rounded-full border border-rose-100 transition">{breed}</button>
+                    ))
                   )}
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-2.5">
                 <div>
-                  <label className="block text-xs font-bold text-slate-600 mb-1">체중 (몸무게)</label>
-                  <div className="relative">
-                    <input
-                      type="number"
-                      step="0.1"
-                      name="weight"
-                      placeholder="예: 3.5"
-                      value={formData.weight}
-                      onChange={handleChange}
-                      className="w-full px-3.5 py-3 pr-10 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-400 text-sm"
-                    />
-                    <span className="absolute right-3.5 top-3 text-xs text-slate-400 font-bold">kg</span>
-                  </div>
+                  <label className="block text-xs font-bold text-slate-600 mb-1">체중 (kg)</label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    name="weight"
+                    placeholder="예: 3.5"
+                    value={formData.weight}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-400 text-sm"
+                  />
                 </div>
-
                 <div>
-                  <label className="block text-xs font-bold text-slate-600 mb-1">중성화 수술 여부</label>
-                  <div className="grid grid-cols-2 gap-1.5 pt-0.5">
+                  <label className="block text-xs font-bold text-slate-600 mb-1">중성화 여부</label>
+                  <div className="grid grid-cols-2 gap-1">
                     <button
                       type="button"
                       onClick={() => setFormData({ ...formData, isNeutered: 'yes' })}
-                      className={`py-3 rounded-xl font-bold text-xs transition ${
-                        formData.isNeutered === 'yes'
-                          ? 'bg-rose-500 text-white shadow-sm'
-                          : 'bg-slate-50 text-slate-500 border border-slate-200 hover:bg-slate-100'
+                      className={`py-2.5 rounded-xl font-bold text-xs transition ${
+                        formData.isNeutered === 'yes' ? 'bg-rose-500 text-white' : 'bg-slate-50 text-slate-500 border border-slate-200'
                       }`}
                     >
-                      O (예)
+                      O
                     </button>
                     <button
                       type="button"
                       onClick={() => setFormData({ ...formData, isNeutered: 'no' })}
-                      className={`py-3 rounded-xl font-bold text-xs transition ${
-                        formData.isNeutered === 'no'
-                          ? 'bg-rose-500 text-white shadow-sm'
-                          : 'bg-slate-50 text-slate-500 border border-slate-200 hover:bg-slate-100'
+                      className={`py-2.5 rounded-xl font-bold text-xs transition ${
+                        formData.isNeutered === 'no' ? 'bg-rose-500 text-white' : 'bg-slate-50 text-slate-500 border border-slate-200'
                       }`}
                     >
-                      X (아니오)
+                      X
                     </button>
                   </div>
                 </div>
@@ -389,7 +392,7 @@ export default function Home() {
 
               <button
                 type="submit"
-                className="w-full bg-rose-500 hover:bg-rose-600 text-white font-extrabold py-4 rounded-2xl shadow-lg shadow-rose-500/30 transition text-base mt-2"
+                className="w-full bg-rose-500 hover:bg-rose-600 text-white font-extrabold py-4 rounded-2xl shadow-lg shadow-rose-500/30 transition text-sm mt-3"
               >
                 🔍 플랜별 맞춤 견적 확인하기
               </button>
@@ -401,7 +404,7 @@ export default function Home() {
 
       {/* 3. 왜 PetFit일까요? */}
       <section className="py-16 px-4 bg-white border-y border-rose-100/60">
-        <div className="max-w-5xl mx-auto text-center">
+        <div className="max-w-6xl mx-auto text-center">
           <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
             왜 반려인들이 <span className="text-rose-500">PetFit</span>에서 비교할까요?
           </h2>
@@ -527,7 +530,6 @@ export default function Home() {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">
-                  {/* 프리미엄 플랜 */}
                   <div className="flex flex-col">
                     <p className="text-[10px] font-bold text-rose-500 text-center mb-1">✨ 가장 높은 보장 한도와 본인부담금 최소화</p>
                     <div
@@ -546,7 +548,6 @@ export default function Home() {
                     </div>
                   </div>
 
-                  {/* 스탠다드 플랜 */}
                   <div className="flex flex-col">
                     <p className="text-[10px] font-bold text-rose-500 text-center mb-1">✨ 가장 선호되는 대중적인 플랜</p>
                     <div
@@ -565,7 +566,6 @@ export default function Home() {
                     </div>
                   </div>
 
-                  {/* 실속가득 플랜 */}
                   <div className="flex flex-col">
                     <p className="text-[10px] font-bold text-rose-500 text-center mb-1">✨ 합리적인 보험료 중심의 실속형 플랜</p>
                     <div
@@ -750,7 +750,7 @@ export default function Home() {
                         className={`p-3 rounded-xl font-bold text-xs transition border flex flex-col items-center justify-center gap-1 ${
                           applicantInfo.consultType === 'online'
                             ? 'bg-rose-500 text-white border-rose-500 shadow-md'
-                            : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
+                            : 'bg-slate-50/50 text-slate-600 border-slate-200 hover:bg-slate-100'
                         }`}
                       >
                         <span className="text-base">💻 온라인 (화상 상담)</span>
@@ -763,7 +763,7 @@ export default function Home() {
                         className={`p-3 rounded-xl font-bold text-xs transition border flex flex-col items-center justify-center gap-1 ${
                           applicantInfo.consultType === 'offline'
                             ? 'bg-rose-500 text-white border-rose-500 shadow-md'
-                            : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
+                            : 'bg-slate-50/50 text-slate-600 border-slate-200 hover:bg-slate-100'
                         }`}
                       >
                         <span className="text-base">🤝 대면 (직접 상담)</span>
@@ -806,45 +806,7 @@ export default function Home() {
 
           </div>
         </div>
-      </section>
-
-      {/* 3. 왜 PetFit일까요? */}
-      <section className="py-16 px-4 bg-white border-y border-rose-100/60">
-        <div className="max-w-5xl mx-auto text-center">
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
-            왜 반려인들이 <span className="text-rose-500">PetFit</span>에서 비교할까요?
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-8">
-            <div className="bg-rose-50/50 p-6 rounded-3xl border border-rose-100">
-              <p className="text-3xl font-black text-rose-500 mb-1">15만건+</p>
-              <p className="text-xs font-bold text-slate-800">누적 비교 견적 건수</p>
-            </div>
-            <div className="bg-rose-50/50 p-6 rounded-3xl border border-rose-100">
-              <p className="text-3xl font-black text-rose-500 mb-1">99.1%</p>
-              <p className="text-xs font-bold text-slate-800">보장 매칭 만족도</p>
-            </div>
-            <div className="bg-rose-50/50 p-6 rounded-3xl border border-rose-100">
-              <p className="text-3xl font-black text-rose-500 mb-1">600+</p>
-              <p className="text-xs font-bold text-slate-800">제휴 자동청구 병원</p>
-            </div>
-            <div className="bg-rose-50/50 p-6 rounded-3xl border border-rose-100">
-              <p className="text-3xl font-black text-rose-500 mb-1">최대 30%</p>
-              <p className="text-xs font-bold text-slate-800">보험료 절감 효과</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 4. 포스터 5단 섹션 */}
-      <section className="w-full bg-white flex flex-col items-center">
-        <div className="w-full max-w-4xl mx-auto flex flex-col">
-          <img src="/pet-poster-1.png" alt="포스터 1" className="w-full h-auto block m-0 p-0" />
-          <img src="/pet-poster-2.png" alt="포스터 2" className="w-full h-auto block m-0 p-0" />
-          <img src="/pet-poster-3.png" alt="포스터 3" className="w-full h-auto data block m-0 p-0" />
-          <img src="/pet-poster-4.png" alt="포스터 4" className="w-full h-auto block m-0 p-0" />
-          <img src="/pet-poster-5.png" alt="포스터 5" className="w-full h-auto block m-0 p-0" />
-        </div>
-      </section>
+      )}
 
       {/* 푸터 */}
       <footer className="bg-slate-900 text-slate-400 text-xs py-10 px-4 border-t border-slate-800">
