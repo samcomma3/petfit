@@ -20,6 +20,33 @@ export default function Home() {
     ownerPhone: '',
   });
 
+  // 약관 동의 상태 관리
+  const [agreements, setAgreements] = useState({
+    all: false,
+    privacy: false, // 필수
+    thirdParty: false, // 필수
+    marketing: false, // 선택
+  });
+
+  // 약관 상세 팝업 모달 상태
+  const [isTermModalOpen, setIsTermModalOpen] = useState(false);
+
+  const handleAllCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const checked = e.target.checked;
+    setAgreements({
+      all: checked,
+      privacy: checked,
+      thirdParty: checked,
+      marketing: checked,
+    });
+  };
+
+  const handleSingleCheck = (key: 'privacy' | 'thirdParty' | 'marketing') => {
+    const updated = { ...agreements, [key]: !agreements[key] };
+    updated.all = updated.privacy && updated.thirdParty && updated.marketing;
+    setAgreements(updated);
+  };
+
   const [isCompareModalOpen, setIsCompareModalOpen] = useState(false);
   const [compareStep, setCompareStep] = useState<1 | 2 | 3 | 4>(1); 
   const [selectedCategory, setSelectedCategory] = useState<'dog' | 'cat'>('dog');
@@ -55,6 +82,11 @@ export default function Home() {
       alert('우리 아이 이름, 품종, 그리고 보호자님의 연락처를 입력해 주세요 🐾');
       return;
     }
+    if (!agreements.privacy || !agreements.thirdParty) {
+      alert('필수 약관(개인정보 수집·이용 및 제3자 제공 동의)에 체크해 주세요.');
+      return;
+    }
+
     setSelectedCategory(petType);
     setSelectedBreed(formData.breed);
     
@@ -127,12 +159,6 @@ export default function Home() {
               맞춤 펫보험 비교
             </span>
           </div>
-          <button
-            onClick={() => { setCompareStep(1); setIsCompareModalOpen(true); }}
-            className="bg-rose-500 hover:bg-rose-600 text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-full transition shadow-lg shadow-rose-500/20 active:scale-95"
-          >
-            플랜별 맞춤 비교견적
-          </button>
         </div>
       </header>
 
@@ -140,6 +166,7 @@ export default function Home() {
       <section className="py-8 sm:py-16 px-4">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-12 gap-8 items-stretch">
           
+          {/* 좌측 히어로 카드 */}
           <div className="lg:col-span-8 bg-gradient-to-br from-white via-rose-50/20 to-orange-50/20 rounded-[2.5rem] p-6 sm:p-12 shadow-xl border border-rose-100/70 flex flex-col justify-between relative overflow-hidden">
             
             <div className="grid lg:grid-cols-12 gap-6 items-center relative z-10">
@@ -191,11 +218,12 @@ export default function Home() {
 
           </div>
 
+          {/* 우측 정보 입력 폼 카드 */}
           <div ref={formRef} className="lg:col-span-4 bg-white rounded-[2.5rem] p-6 sm:p-8 shadow-2xl border border-slate-100 lg:sticky lg:top-24 flex flex-col justify-center scroll-mt-24">
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2 className="text-xl font-extrabold text-slate-900">맞춤 견적 간편 신청</h2>
-                <p className="text-xs text-slate-400 mt-0.5">우리 아이 정보를 입력해 주세요.</p>
+                <p className="text-xs text-slate-400 mt-0.5">상담은 무료이며, 입력하신 정보는 상담 목적으로만 사용됩니다.</p>
               </div>
               <span className="text-3xl">📊</span>
             </div>
@@ -344,12 +372,81 @@ export default function Home() {
                 />
               </div>
 
+              {/* 🌟 약관 동의 체크박스 그룹 (우측 상단 단독 약관보기 배치) */}
+              <div className="pt-3 pb-1 border-t border-slate-100 space-y-2.5">
+                <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={agreements.all}
+                      onChange={handleAllCheck}
+                      className="w-4 h-4 rounded text-rose-500 focus:ring-rose-400 border-slate-300 cursor-pointer"
+                    />
+                    <span className="text-xs font-black text-slate-900">전체 동의</span>
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setIsTermModalOpen(true)}
+                    className="text-xs text-emerald-700 font-bold underline hover:text-emerald-900"
+                  >
+                    약관보기
+                  </button>
+                </div>
+
+                <div className="flex items-center">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={agreements.privacy}
+                      onChange={() => handleSingleCheck('privacy')}
+                      className="w-4 h-4 rounded text-rose-500 focus:ring-rose-400 border-slate-300 cursor-pointer"
+                    />
+                    <span className="text-xs font-bold text-slate-700">
+                      개인정보 수집·활용동의 <span className="text-rose-500 font-extrabold">(필수)</span>
+                    </span>
+                  </label>
+                </div>
+
+                <div className="flex items-center">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={agreements.thirdParty}
+                      onChange={() => handleSingleCheck('thirdParty')}
+                      className="w-4 h-4 rounded text-rose-500 focus:ring-rose-400 border-slate-300 cursor-pointer"
+                    />
+                    <span className="text-xs font-bold text-slate-700">
+                      개인정보 제3자 제공 동의 <span className="text-rose-500 font-extrabold">(필수)</span>
+                    </span>
+                  </label>
+                </div>
+
+                <div className="flex items-center">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={agreements.marketing}
+                      onChange={() => handleSingleCheck('marketing')}
+                      className="w-4 h-4 rounded text-rose-500 focus:ring-rose-400 border-slate-300 cursor-pointer"
+                    />
+                    <span className="text-xs font-bold text-slate-600">
+                      마케팅정보 수신 동의 <span className="text-slate-400 font-normal">(선택)</span>
+                    </span>
+                  </label>
+                </div>
+              </div>
+
               <button
                 type="submit"
-                className="w-full bg-rose-500 hover:bg-rose-600 text-white font-extrabold py-4 rounded-2xl shadow-lg shadow-rose-500/30 transition text-base mt-3 active:scale-[0.98]"
+                className="w-full bg-rose-500 hover:bg-rose-600 text-white font-extrabold py-4 rounded-2xl shadow-lg shadow-rose-500/30 transition text-base mt-2 active:scale-[0.98]"
               >
                 🔍 플랜별 맞춤 견적 확인하기
               </button>
+
+              {/* 🌟 버튼 하단 안내 문구 추가 */}
+              <p className="text-center text-[11px] text-slate-400 pt-1">
+                입력하신 정보는 안전하게 보호됩니다.
+              </p>
             </form>
           </div>
 
@@ -398,7 +495,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 🌟 포스터 이미지 하단 공백 제거 (block 및 leading-none 적용) */}
+      {/* 포스터 이미지 하단 공백 제거 영역 */}
       <section className="w-full bg-white flex flex-col items-center">
         <div className="w-full max-w-4xl mx-auto flex flex-col leading-none">
           <img src="/pet-poster-1.png" alt="포스터 1" className="w-full h-auto block m-0 p-0 border-0" />
@@ -409,6 +506,70 @@ export default function Home() {
         </div>
       </section>
 
+      {/* 약관 내용 보기 팝업 모달 (자동 체크 없이 닫히기만 함) */}
+      {isTermModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-4 overflow-y-auto">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative my-8 max-h-[85vh] flex flex-col">
+            <button
+              onClick={() => setIsTermModalOpen(false)}
+              className="absolute top-5 right-5 text-slate-400 hover:text-slate-600 p-2 text-xl font-bold bg-slate-100 rounded-full w-10 h-10 flex items-center justify-center transition z-10"
+            >
+              ✕
+            </button>
+            
+            <h3 className="text-lg font-black text-slate-900 mb-4 pr-10 text-center">
+              상담신청 및 보험상품 소개를 위한<br />개인정보 수집∙이용 및 제공 동의
+            </h3>
+
+            <div className="overflow-y-auto pr-2 space-y-4 text-xs text-slate-600 leading-relaxed border-t border-b border-slate-100 py-4 my-2">
+              <p>
+                <strong>펫펫(PetFit)</strong>은 상담신청 및 보험상품 소개를 위해 고객님의 개인정보 수집, 이용 및 제공에 대한 동의를 받고 있습니다.
+              </p>
+
+              <div className="space-y-1">
+                <p className="font-bold text-slate-800">■ 개인정보 수집·이용에 대한 동의</p>
+                <p>
+                  펫펫(PetFit)은 개인정보 관련 법률(개인정보보호법·정보통신망 이용 촉진 및 정보보호에 관한 법률·신용정보의 이용 및 보호에 관한 법률)을 준수하며 수집된 개인정보는 이용 목적 외에 다른 용도로 절대 사용되지 않으며, 정보주체는 언제든지 콜센터로 요청 시 개인정보 수집·이용 동의를 철회할 수 있으며, 철회하는 경우 수집된 개인정보는 지체 없이 파기됩니다.
+                </p>
+                <p>1. 수집·이용 목적 : 보험 상담 및 청약, 금융상품 판매</p>
+                <p>2. 수집 항목 : 이름, 성별, 생년월일, 휴대폰 번호, 거주 지역, 상담분야</p>
+                <p>3. 보유 및 이용 기간 : 3년 또는 회원 탈퇴 시까지</p>
+                <p>4. 동의를 거부할 권리 : 정보주체는 개인정보 수집·이용 동의를 거부할 권리가 있습니다. 다만, 동의를 거부하실 경우 보험 상담 및 청약, 금융상품 판매 관련 서비스를 이용할 수 없습니다.</p>
+                <p className="text-[11px] text-slate-400 mt-1">※ 동의 받은 개인정보는 펫펫(PetFit)의 책임과 관리하에 운영되고 있으며, 자세한 개인정보 처리방침은 홈페이지에서도 확인할 수 있습니다.</p>
+              </div>
+
+              <div className="space-y-1 pt-2">
+                <p className="font-bold text-slate-800">■ 개인정보 제3자 제공 동의</p>
+                <p>1. 제공받는자 : 펫펫 전담 Financial Advisor (FA)</p>
+                <p>2. 이용목적 : 보험 상담 및 청약, 금융상품 판매</p>
+                <p>3. 수집항목 : 이름, 성별, 생년월일, 휴대폰번호, 거주지역, 상담분야</p>
+                <p>4. 보유 및 이용기간 : 제공일로부터 3년간</p>
+                <p>5. 동의 거부할 권리 : 개인정보 제3자 제공 동의를 거부할 권리가 있습니다. 다만, 동의를 거부하실 경우 보험 상담 및 청약, 금융상품 판매 관련 서비스를 이용할 수 없습니다.</p>
+              </div>
+
+              <div className="space-y-1 pt-2">
+                <p className="font-bold text-slate-800">■ 마케팅 수집·이용 및 활용 동의</p>
+                <p>
+                  펫펫(PetFit)은 개인정보 관련 법률을 준수하며 수집된 개인정보는 이용 목적 외에 다른 용도로 절대 사용되지 않습니다.
+                </p>
+                <p>1. 수집목적: 맞춤 상품 추천, 광고성 정보 제공, 이벤트 참여 및 경품 지급, 마케팅 활용을 위한 DB 관리, 신규 서비스 안내</p>
+                <p>2. 수집항목 : 이름, 성별, 생년월일, 연락처, 거주지역</p>
+                <p>3. 보유 및 이용 기간 : 3년 또는 회원 탈퇴 시까지</p>
+                <p>4. 동의를 거부할 권리 : 정보주체는 마케팅 수집·이용 동의를 거부할 권리가 있습니다. 다만, 동의를 거부하실 경우 맞춤 상품 추천, 광고성 정보 제공 등 관련 서비스를 이용할 수 없습니다.</p>
+              </div>
+            </div>
+
+            <button
+              onClick={() => setIsTermModalOpen(false)}
+              className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 rounded-2xl transition text-sm mt-3"
+            >
+              확인 완료
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 플랜 선택 및 최종 접수 모달 */}
       {isCompareModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-4 overflow-y-auto">
           <div className="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl relative my-8">
