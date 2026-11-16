@@ -136,6 +136,11 @@ export default function Home() {
       const result = await response.json();
       if (!response.ok) throw new Error(result.message || '서버 전송 실패');
 
+      // 🔥 [추가] 펫핏 메타 픽셀 'Lead' (잠재 고객) 전환 이벤트 전송
+      if (typeof window !== 'undefined' && (window as any).fbq) {
+        (window as any).fbq('track', 'Lead');
+      }
+
       alert(`🎉 [접수 완료] ${applicantInfo.name}님, [${selectedPlan}] 맞춤 견적 신청이 완료되었습니다!`);
       setIsCompareModalOpen(false);
       setCompareStep(1);
@@ -372,7 +377,7 @@ export default function Home() {
                 />
               </div>
 
-              {/* 🌟 약관 동의 체크박스 그룹 (우측 상단 단독 약관보기 배치) */}
+              {/* 약관 동의 체크박스 그룹 */}
               <div className="pt-3 pb-1 border-t border-slate-100 space-y-2.5">
                 <div className="flex items-center justify-between pb-2 border-b border-slate-100">
                   <label className="flex items-center gap-2 cursor-pointer">
@@ -443,7 +448,6 @@ export default function Home() {
                 🔍 플랜별 맞춤 견적 확인하기
               </button>
 
-              {/* 🌟 버튼 하단 안내 문구 추가 */}
               <p className="text-center text-[11px] text-slate-400 pt-1">
                 입력하신 정보는 안전하게 보호됩니다.
               </p>
@@ -506,7 +510,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 약관 내용 보기 팝업 모달 (자동 체크 없이 닫히기만 함) */}
+      {/* 약관 내용 보기 팝업 모달 */}
       {isTermModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-4 overflow-y-auto">
           <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative my-8 max-h-[85vh] flex flex-col">
