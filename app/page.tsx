@@ -12,7 +12,7 @@ export default function Home() {
   const [petType, setPetType] = useState<'dog' | 'cat'>('dog');
   const [formData, setFormData] = useState({
     petName: '',
-    birthDate: '2024-01-01', // 🌟 태어난 해에서 생년월일(YYYY-MM-DD)로 변경
+    birthDate: '2024-01-01',
     breed: '',
     weight: '',
     isNeutered: 'yes',
@@ -30,6 +30,9 @@ export default function Home() {
 
   // 약관 상세 팝업 모달 상태
   const [isTermModalOpen, setIsTermModalOpen] = useState(false);
+
+  // 10세 이상 안내 팝업 상태 관리
+  const [isAgeModalOpen, setIsAgeModalOpen] = useState(false);
 
   const handleAllCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
     const checked = e.target.checked;
@@ -83,13 +86,13 @@ export default function Home() {
       return;
     }
 
-    // 🌟 10살 이상 나이 계산 및 검증 로직 (현재 연도 2026년 기준)
+    // 10살 이상 나이 계산 및 검증 로직 (현재 연도 2026년 기준)
     const birthYear = new Date(formData.birthDate).getFullYear();
     const currentYear = new Date().getFullYear(); // 2026년
     const age = currentYear - birthYear;
 
     if (age >= 10) {
-      alert('10살 이상의 아이는 보험신청을 할 수 없습니다.');
+      setIsAgeModalOpen(true);
       return;
     }
 
@@ -278,7 +281,6 @@ export default function Home() {
                   />
                 </div>
                 <div>
-                  {/* 🌟 태어난 해 ➔ 우리 아이 생년월일 (YYYY-MM-DD) 로 변경 */}
                   <label className="block text-xs font-bold text-slate-600 mb-1">우리아이 생년월일</label>
                   <input
                     type="date"
@@ -515,22 +517,58 @@ export default function Home() {
         </div>
       </section>
 
+      {/* 🌟 10세 이상 가입 제한 안내 팝업 (문장 구조 및 단락 구성 재배치) */}
+      {isAgeModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 overflow-y-auto">
+          <div className="bg-white rounded-[2rem] max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-100 relative text-center">
+            <span className="text-4xl mb-3 inline-block">🐾</span>
+            <h3 className="text-lg font-black text-slate-900 mb-4">
+              가입 연령 안내
+            </h3>
+            <div className="bg-rose-50/50 p-5 rounded-2xl border border-rose-100 mb-6 text-xs sm:text-sm text-slate-700 leading-relaxed text-center space-y-2.5 w-full">
+              <p className="font-bold text-slate-900">
+                어르신 펫티어(노령 동물) 아이들은 더 세심한 사랑과 케어가 필요하지요.
+              </p>
+              <p>
+                현재 표준 펫보험 상품은{' '}
+                <span className="bg-rose-200/70 text-rose-900 font-black px-1.5 py-0.5 rounded underline decoration-rose-500 decoration-2 underline-offset-2">
+                  만 9세 이하까지만
+                </span>{' '}
+                가입할 수 있어, 소중한 우리 아이에게 든든한 울타리를 마련해 드리지 못해 송구합니다.
+              </p>
+              <p className="text-slate-500 pt-1">
+                그동안 보호자님의 따뜻한 사랑 속에서 건강하게 나이 들어간 아이를 진심으로 응원합니다.
+              </p>
+            </div>
+            <button
+              onClick={() => setIsAgeModalOpen(false)}
+              className="w-full bg-rose-500 hover:bg-rose-600 text-white font-bold py-3.5 rounded-2xl transition text-sm shadow-lg shadow-rose-500/20 active:scale-95"
+            >
+              확인
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* 약관 내용 보기 팝업 모달 */}
       {isTermModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-4 overflow-y-auto">
-          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative my-8 max-h-[85vh] flex flex-col">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 overflow-y-auto">
+          <div className="bg-white rounded-[2rem] max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-100 relative my-8 max-h-[85vh] flex flex-col">
             <button
               onClick={() => setIsTermModalOpen(false)}
-              className="absolute top-5 right-5 text-slate-400 hover:text-slate-600 p-2 text-xl font-bold bg-slate-100 rounded-full w-10 h-10 flex items-center justify-center transition z-10"
+              className="absolute top-5 right-5 text-slate-400 hover:text-slate-700 p-2 text-base font-bold bg-slate-100 rounded-full w-10 h-10 flex items-center justify-center transition"
             >
               ✕
             </button>
             
-            <h3 className="text-lg font-black text-slate-900 mb-4 pr-10 text-center">
-              상담신청 및 보험상품 소개를 위한<br />개인정보 수집∙이용 및 제공 동의
-            </h3>
+            <div className="text-center mb-4 pr-6">
+              <span className="text-2xl mb-1 inline-block">📄</span>
+              <h3 className="text-lg font-black text-slate-900 leading-snug">
+                상담신청 및 보험상품 소개를 위한<br />개인정보 수집∙이용 및 제공 동의
+              </h3>
+            </div>
 
-            <div className="overflow-y-auto pr-2 space-y-4 text-xs text-slate-600 leading-relaxed border-t border-b border-slate-100 py-4 my-2">
+            <div className="overflow-y-auto pr-2 space-y-4 text-xs text-slate-600 leading-relaxed bg-slate-50 p-4 rounded-2xl border border-slate-100 my-2">
               <p>
                 <strong>펫펫(PetFit)</strong>은 상담신청 및 보험상품 소개를 위해 고객님의 개인정보 수집, 이용 및 제공에 대한 동의를 받고 있습니다.
               </p>
@@ -570,7 +608,7 @@ export default function Home() {
 
             <button
               onClick={() => setIsTermModalOpen(false)}
-              className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 rounded-2xl transition text-sm mt-3"
+              className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 rounded-2xl transition text-sm mt-4 shadow-lg active:scale-95"
             >
               확인 완료
             </button>
@@ -580,8 +618,8 @@ export default function Home() {
 
       {/* 플랜 선택 및 최종 접수 모달 */}
       {isCompareModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-4 overflow-y-auto">
-          <div className="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl relative my-8">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 overflow-y-auto">
+          <div className="bg-white rounded-[2.5rem] max-w-xl w-full p-6 sm:p-8 shadow-2xl relative my-8 border border-slate-100">
             <button
               onClick={() => setIsCompareModalOpen(false)}
               className="absolute top-5 right-5 text-slate-400 hover:text-slate-600 p-2 text-xl font-bold bg-slate-100 rounded-full w-10 h-10 flex items-center justify-center transition"
