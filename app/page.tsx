@@ -12,7 +12,7 @@ export default function Home() {
   const [petType, setPetType] = useState<'dog' | 'cat'>('dog');
   const [formData, setFormData] = useState({
     petName: '',
-    birthYear: '2024',
+    birthDate: '2024-01-01', // 🌟 태어난 해에서 생년월일(YYYY-MM-DD)로 변경
     breed: '',
     weight: '',
     isNeutered: 'yes',
@@ -78,10 +78,21 @@ export default function Home() {
 
   const handleCalculate = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.petName || !formData.ownerPhone || !formData.breed) {
-      alert('우리 아이 이름, 품종, 그리고 보호자님의 연락처를 입력해 주세요 🐾');
+    if (!formData.petName || !formData.ownerPhone || !formData.breed || !formData.birthDate) {
+      alert('우리 아이 이름, 생년월일, 품종, 그리고 보호자님의 연락처를 입력해 주세요 🐾');
       return;
     }
+
+    // 🌟 10살 이상 나이 계산 및 검증 로직 (현재 연도 2026년 기준)
+    const birthYear = new Date(formData.birthDate).getFullYear();
+    const currentYear = new Date().getFullYear(); // 2026년
+    const age = currentYear - birthYear;
+
+    if (age >= 10) {
+      alert('10살 이상의 아이는 보험신청을 할 수 없습니다.');
+      return;
+    }
+
     if (!agreements.privacy || !agreements.thirdParty) {
       alert('필수 약관(개인정보 수집·이용 및 제3자 제공 동의)에 체크해 주세요.');
       return;
@@ -114,7 +125,7 @@ export default function Home() {
       petType: selectedCategory,
       breed: selectedBreed,
       petName: applicantInfo.petName || formData.petName || '미입력',
-      birthYear: formData.birthYear,
+      birthDate: formData.birthDate,
       weight: applicantInfo.weight,
       isNeutered: applicantInfo.isNeutered,
       gender: applicantInfo.gender,
@@ -135,11 +146,6 @@ export default function Home() {
 
       const result = await response.json();
       if (!response.ok) throw new Error(result.message || '서버 전송 실패');
-
-      // 🔥 [추가] 펫핏 메타 픽셀 'Lead' (잠재 고객) 전환 이벤트 전송
-      if (typeof window !== 'undefined' && (window as any).fbq) {
-        (window as any).fbq('track', 'Lead');
-      }
 
       alert(`🎉 [접수 완료] ${applicantInfo.name}님, [${selectedPlan}] 맞춤 견적 신청이 완료되었습니다!`);
       setIsCompareModalOpen(false);
@@ -272,17 +278,16 @@ export default function Home() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-600 mb-1">태어난 해</label>
-                  <select
-                    name="birthYear"
-                    value={formData.birthYear}
+                  {/* 🌟 태어난 해 ➔ 우리 아이 생년월일 (YYYY-MM-DD) 로 변경 */}
+                  <label className="block text-xs font-bold text-slate-600 mb-1">우리아이 생년월일</label>
+                  <input
+                    type="date"
+                    name="birthDate"
+                    required
+                    value={formData.birthDate}
                     onChange={handleChange}
                     className="w-full px-3 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-400 text-xs bg-white transition"
-                  >
-                    {Array.from({ length: 20 }, (_, i) => 2026 - i).map((year) => (
-                      <option key={year} value={year}>{year}년 ({2026 - year}세)</option>
-                    ))}
-                  </select>
+                  />
                 </div>
               </div>
 
