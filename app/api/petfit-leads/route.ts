@@ -1,16 +1,30 @@
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 
+function formatBirthDate(birthDate?: string) {
+  if (!birthDate) return '미입력';
+
+  const parts = String(birthDate).split('-');
+  if (parts.length === 3) {
+    const [year, month, day] = parts;
+    return `${year}년 ${month}월 ${day}일`;
+  }
+
+  return String(birthDate);
+}
+
 export async function POST(request: Request) {
   try {
     const data = await request.json();
+    const formattedBirthDate = formatBirthDate(data.birthDate);
 
     console.log('-------------------------------------------');
     console.log('🎉 [PetFit 신규 견적 신청 DB 수신 완료!]');
     console.log(`- 보호자 성함: ${data.applicantName}`);
     console.log(`- 연락처: ${data.applicantPhone}`);
     console.log(`- 반려동물: ${data.petName} (${data.breed}, ${data.petType})`);
-    console.log(`- 성별: ${data.gender || '미입력'}`); // 🌟 콘솔에 성별 출력 추가
+    console.log(`- 성별: ${data.gender || '미입력'}`);
+    console.log(`- 생년월일: ${formattedBirthDate}`);
     console.log(`- 선택 보험사: ${data.selectedInsurance || '미선택'}`);
     console.log(`- 체중 / 중성화: ${data.weight}kg / ${data.isNeutered === 'yes' ? 'O' : 'X'}`);
     console.log(`- 상담 방식: ${data.consultType}`);
@@ -41,8 +55,8 @@ export async function POST(request: Request) {
             <li><b>📞 연락처:</b> ${data.applicantPhone}</li>
             <li><b>🐶 반려동물 이름:</b> ${data.petName}</li>
             <li><b>🏷️ 품종 / 분류:</b> ${data.breed} (${data.petType === 'dog' ? '강아지' : '고양이'})</li>
-            <li><b>🐾 성별:</b> <span style="color: #f43f5e; font-weight: bold;">${data.gender || '미입력'}</span></li> <!-- 🌟 이메일 본문에 성별 항목 추가 -->
-            <li><b>📅 태어난 해:</b> ${data.birthYear}년</li>
+            <li><b>🐾 성별:</b> <span style="color: #f43f5e; font-weight: bold;">${data.gender || '미입력'}</span></li>
+            <li><b>📅 생년월일:</b> ${formattedBirthDate}</li>
             <li><b>⚖️ 체중:</b> ${data.weight || '미입력'} kg</li>
             <li><b>✂️ 중성화 여부:</b> ${data.isNeutered === 'yes' ? 'O (예)' : 'X (아니오)'}</li>
             <li><b>💬 상담 방식:</b> ${data.consultType}</li>
