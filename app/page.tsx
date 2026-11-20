@@ -34,6 +34,9 @@ export default function Home() {
   // 10세 이상 안내 팝업 상태 관리
   const [isAgeModalOpen, setIsAgeModalOpen] = useState(false);
 
+  // 중복 접수 방지 로딩 상태
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleAllCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
     const checked = e.target.checked;
     setAgreements({
@@ -119,10 +122,14 @@ export default function Home() {
 
   const handleDbSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return; // 이미 전송 중이면 중복 실행 차단
+
     if (!applicantInfo.name || !applicantInfo.phone) {
       alert('보호자 성함과 연락처를 정확히 입력해 주세요!');
       return;
     }
+
+    setIsSubmitting(true);
 
     const payload = {
       petType: selectedCategory,
@@ -156,6 +163,8 @@ export default function Home() {
     } catch (error) {
       console.error(error);
       alert('접수 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -517,7 +526,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 🌟 10세 이상 가입 제한 안내 팝업 (문장 구조 및 단락 구성 재배치) */}
+      {/* 🌟 10세 이상 가입 제한 안내 팝업 */}
       {isAgeModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 overflow-y-auto">
           <div className="bg-white rounded-[2rem] max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-100 relative text-center">
@@ -621,8 +630,9 @@ export default function Home() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 overflow-y-auto">
           <div className="bg-white rounded-[2.5rem] max-w-xl w-full p-6 sm:p-8 shadow-2xl relative my-8 border border-slate-100">
             <button
-              onClick={() => setIsCompareModalOpen(false)}
-              className="absolute top-5 right-5 text-slate-400 hover:text-slate-600 p-2 text-xl font-bold bg-slate-100 rounded-full w-10 h-10 flex items-center justify-center transition"
+              onClick={() => !isSubmitting && setIsCompareModalOpen(false)}
+              disabled={isSubmitting}
+              className="absolute top-5 right-5 text-slate-400 hover:text-slate-600 p-2 text-xl font-bold bg-slate-100 rounded-full w-10 h-10 flex items-center justify-center transition disabled:opacity-50"
             >
               ✕
             </button>
@@ -704,27 +714,35 @@ export default function Home() {
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <label className="block text-xs font-bold text-slate-600 mb-1">우리 아이 이름</label>
-                      <input type="text" name="petName" required value={applicantInfo.petName} onChange={handleApplicantChange} className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm" />
+                      <input type="text" name="petName" required disabled={isSubmitting} value={applicantInfo.petName} onChange={handleApplicantChange} className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm disabled:bg-slate-100" />
                     </div>
                     <div>
                       <label className="block text-xs font-bold text-slate-600 mb-1">보호자 성함</label>
-                      <input type="text" name="name" required placeholder="홍길동" value={applicantInfo.name} onChange={handleApplicantChange} className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm" />
+                      <input type="text" name="name" required disabled={isSubmitting} placeholder="홍길동" value={applicantInfo.name} onChange={handleApplicantChange} className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm disabled:bg-slate-100" />
                     </div>
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-slate-600 mb-1">휴대폰 번호</label>
-                    <input type="tel" name="phone" required placeholder="010-0000-0000" value={applicantInfo.phone} onChange={handleApplicantChange} className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm" />
+                    <input type="tel" name="phone" required disabled={isSubmitting} placeholder="010-0000-0000" value={applicantInfo.phone} onChange={handleApplicantChange} className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm disabled:bg-slate-100" />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-slate-600 mb-1.5">상담 방법</label>
                     <div className="grid grid-cols-2 gap-2">
-                      <button type="button" onClick={() => setApplicantInfo({ ...applicantInfo, consultType: 'online' })} className={`p-3 rounded-xl font-bold text-xs border ${applicantInfo.consultType === 'online' ? 'bg-rose-500 text-white border-rose-500' : 'bg-slate-50 text-slate-600 border-slate-200'}`}>💻 온라인 상담</button>
-                      <button type="button" onClick={() => setApplicantInfo({ ...applicantInfo, consultType: 'offline' })} className={`p-3 rounded-xl font-bold text-xs border ${applicantInfo.consultType === 'offline' ? 'bg-rose-500 text-white border-rose-500' : 'bg-slate-50 text-slate-600 border-slate-200'}`}>🤝 대면 상담</button>
+                      <button type="button" disabled={isSubmitting} onClick={() => setApplicantInfo({ ...applicantInfo, consultType: 'online' })} className={`p-3 rounded-xl font-bold text-xs border ${applicantInfo.consultType === 'online' ? 'bg-rose-500 text-white border-rose-500' : 'bg-slate-50 text-slate-600 border-slate-200'}`}>💻 온라인 상담</button>
+                      <button type="button" disabled={isSubmitting} onClick={() => setApplicantInfo({ ...applicantInfo, consultType: 'offline' })} className={`p-3 rounded-xl font-bold text-xs border ${applicantInfo.consultType === 'offline' ? 'bg-rose-500 text-white border-rose-500' : 'bg-slate-50 text-slate-600 border-slate-200'}`}>🤝 대면 상담</button>
                     </div>
                   </div>
                 </div>
-                <button type="submit" className="w-full bg-rose-500 hover:bg-rose-600 text-white font-extrabold py-3.5 rounded-2xl transition text-sm shadow-lg shadow-rose-500/25">
-                  🚀 최종 견적 접수 완료하기
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className={`w-full font-extrabold py-3.5 rounded-2xl transition text-sm shadow-lg ${
+                    isSubmitting
+                      ? 'bg-slate-400 text-white cursor-not-allowed shadow-none'
+                      : 'bg-rose-500 hover:bg-rose-600 text-white shadow-rose-500/25 active:scale-[0.98]'
+                  }`}
+                >
+                  {isSubmitting ? '⏳ 무료상담 접수 중...' : '🚀 최종 견적 접수 완료하기'}
                 </button>
               </form>
             )}
