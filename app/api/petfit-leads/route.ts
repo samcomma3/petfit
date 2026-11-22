@@ -13,25 +13,38 @@ function formatBirthDate(birthDate?: string) {
   return String(birthDate);
 }
 
+async function appendToGoogleSheet(payload: Record<string, unknown>) {
+  const webhookUrl = process.env.GOOGLE_SHEET_WEBHOOK_URL;
+  if (!webhookUrl) {
+    console.warn('⚠️ GOOGLE_SHEET_WEBHOOK_URL 환경 변수가 설정되지 않았습니다.');
+    return;
+  }
+
+  const res = await fetch(webhookUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) {
+    throw new Error(`스프레드시트 응답 오류: ${res.status}`);
+  }
+}
+
 export async function POST(request: Request) {
   try {
     const data = await request.json();
     const formattedBirthDate = formatBirthDate(data.birthDate);
 
-    console.log('-------------------------------------------');
-    console.log('🎉 [PetFit 신규 견적 신청 DB 수신 완료!]');
-    console.log(`- 보호자 성함: ${data.applicantName}`);
-    console.log(`- 연락처: ${data.applicantPhone}`);
-    console.log(`- 반려동물: ${data.petName} (${data.breed}, ${data.petType})`);
-    console.log(`- 성별: ${data.gender || '미입력'}`);
-    console.log(`- 생년월일: ${formattedBirthDate}`);
-    console.log(`- 선택 보험사: ${data.selectedInsurance || '미선택'}`);
-    console.log(`- 체중 / 중성화: ${data.weight}kg / ${data.isNeutered === 'yes' ? 'O' : 'X'}`);
-    console.log(`- 상담 방식: ${data.consultType}`);
-    console.log(`- 추가 메모: ${data.memo || '없음'}`);
-    console.log('-------------------------------------------');
+    // 1. 구글 스프레드시트 자동 기입
+    try {
+      await appendToGoogleSheet(data);
+      console.log('✅ [구글 스프레드시트 기록 성공]');
+    } catch (sheetError) {
+      console.error('❌ [구글 스프레드시트 기록 실패]:', sheetError);
+    }
 
-    // 📧 구글 메일 전송 설정 (Nodemailer)
+    // 2. 기존 이메일 알림 발송
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -71,9 +84,9 @@ export async function POST(request: Request) {
     await transporter.sendMail(mailOptions);
     console.log('✅ [이메일 전송 성공]: terryjun95@gmail.com , cozyjk00@gmail.com');
 
-    return NextResponse.json({ success: true, message: '데이터 수신 및 이메일 전송 완료' });
+    return NextResponse.json({ success: true, message: '시트 기록 및 이메일 전송 완료' });
   } catch (error) {
-    console.error('❌ [이메일 전송 실패 오류]:', error);
+    console.error('❌ [처리 실패 오류]:', error);
     return NextResponse.json({ success: false, message: '서버 오류 발생' }, { status: 500 });
   }
 }
